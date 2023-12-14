@@ -360,6 +360,38 @@ impl DijkstraMap {
     }
 }
 
+
+
+impl From<bool> for Directional {
+    fn from(val: bool) -> Self {
+        match val {
+            true => Directional::Bidirectional,
+            false => Directional::Unidirectional,
+        }
+    }
+}
+
+impl From<Option<bool>> for Directional {
+    fn from(val: Option<bool>) -> Self {
+        match val {
+            Some(x) => x.into(),
+            None => Directional::Bidirectional,
+        }
+    }
+}
+
+impl From<Option<Weight>> for Weight {
+    fn from(val: Option<Weight>) -> Self {
+        val.unwrap_or_default()
+    }
+}
+
+impl From<Option<TerrainType>> for TerrainType {
+    fn from(val: Option<TerrainType>) -> Self {
+        val.unwrap_or_default()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -410,41 +442,5 @@ mod tests {
                 op, undo
             );
         }
-    }
-}
-
-impl Default for Directional {
-    fn default() -> Self {
-        Directional::Bidirectional
-    }
-}
-
-impl Into<Directional> for bool {
-    fn into(self) -> Directional {
-        match self {
-            true => Directional::Bidirectional,
-            false => Directional::Unidirectional,
-        }
-    }
-}
-
-impl Into<Directional> for Option<bool> {
-    fn into(self) -> Directional {
-        match self {
-            Some(x) => x.into(),
-            None => Directional::Bidirectional,
-        }
-    }
-}
-
-impl Into<Weight> for Option<Weight> {
-    fn into(self) -> Weight {
-        self.unwrap_or_default()
-    }
-}
-
-impl Into<TerrainType> for Option<TerrainType> {
-    fn into(self) -> TerrainType {
-        self.unwrap_or_default()
     }
 }

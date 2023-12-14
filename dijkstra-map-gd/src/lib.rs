@@ -219,7 +219,7 @@ impl Interface {
     ) -> i64 {
         // let terrain_type: TerrainType = terrain_type.unwrap_or(-1).into();
         let res = self.dijkstra.add_point(
-            point_id.into(),
+            point_id,
             dijkstra_map::TerrainType::Terrain(terrain_type),
         );
         result_to_int(res)
@@ -301,8 +301,8 @@ impl Interface {
     /// ```
     #[func]
     pub fn remove_point(&mut self, point_id: i32) -> i64 {
-        let res = self.dijkstra.remove_point(point_id.into());
-        result_to_int(res.ok_or(()))
+        let res = self.dijkstra.remove_point(point_id);
+        result_to_int(res)
     }
 
     /// Returns [true] if the map contains the given point.
@@ -423,9 +423,9 @@ impl Interface {
         // #[opt] bidirectional: Option<bool>,
     ) -> i64 {
         result_to_int(self.dijkstra.connect_points(
-            source.into(),
-            target.into(),
-            Some(weight).map(Weight),
+            source,
+            target,
+            Some(Weight(weight)),
             Some(bidirectional),
         ))
     }
@@ -466,8 +466,8 @@ impl Interface {
         // #[opt] bidirectional: Option<bool>,
     ) -> i64 {
         result_to_int(self.dijkstra.remove_connection(
-            source.into(),
-            target.into(),
+            source,
+            target,
             Some(bidirectional),
         ))
     }
@@ -873,7 +873,7 @@ impl Interface {
                                 line!(),
                             );
                         }
-                        int.err()
+                        int.ok()
                     })
                     .map(|ival| PointId(ival as i32))
                     .collect(),
