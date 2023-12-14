@@ -16,7 +16,7 @@
 //! Users have to store that information themselves, if they want it;
 //! for example, in a [Dictionary].
 
-use dijkstra_map::{Cost, DijkstraMap, PointId, Read, TerrainType, Weight};
+use dijkstra_map::{Cost, PointId, Read, TerrainType, Weight};
 use fnv::FnvHashMap;
 use fnv::FnvHashSet;
 use godot::prelude::*;
@@ -72,8 +72,9 @@ const FAILED: i64 = 1;
 /// point towards the destination and inspected points are assumed to be
 /// origins.
 #[derive(GodotClass, Clone)]
-pub struct Interface {
-    dijkstra: DijkstraMap,
+
+pub struct DijkstraMap {
+    dijkstra: dijkstra_map::DijkstraMap,
 }
 
 /// Change a Rust's [`Result`] to an integer (which is how errors are reported
@@ -111,7 +112,7 @@ fn variant_to_width_and_height(bounds: Variant) -> Option<(usize, usize, usize, 
 }
 
 #[godot_api]
-impl IRefCounted for Interface {
+impl IRefCounted for DijkstraMap {
     /// Create a new empty `DijkstraMap`.
     ///
     /// # Example
@@ -128,13 +129,13 @@ impl IRefCounted for Interface {
     /// ```
     fn init(sprite: Base<RefCounted>) -> Self {
         Self {
-            dijkstra: DijkstraMap::new(),
+            dijkstra: dijkstra_map::DijkstraMap::new(),
         }
     }
 }
 
 #[godot_api]
-impl Interface {
+impl DijkstraMap {
     #[func]
     pub fn clear(&mut self) {
         self.dijkstra.clear()
@@ -218,10 +219,9 @@ impl Interface {
         terrain_type: i32,
     ) -> i64 {
         // let terrain_type: TerrainType = terrain_type.unwrap_or(-1).into();
-        let res = self.dijkstra.add_point(
-            point_id,
-            dijkstra_map::TerrainType::Terrain(terrain_type),
-        );
+        let res = self
+            .dijkstra
+            .add_point(point_id, dijkstra_map::TerrainType::Terrain(terrain_type));
         result_to_int(res)
     }
 
@@ -254,9 +254,7 @@ impl Interface {
     ) -> i64 {
         // let terrain_id = terrain_id.unwrap_or(-1);
         let terrain: TerrainType = terrain_id.into();
-        let res = self
-            .dijkstra
-            .set_terrain_for_point(point_id, terrain);
+        let res = self.dijkstra.set_terrain_for_point(point_id, terrain);
         result_to_int(res)
     }
 
@@ -465,11 +463,10 @@ impl Interface {
         // TODO opt
         // #[opt] bidirectional: Option<bool>,
     ) -> i64 {
-        result_to_int(self.dijkstra.remove_connection(
-            source,
-            target,
-            Some(bidirectional),
-        ))
+        result_to_int(
+            self.dijkstra
+                .remove_connection(source, target, Some(bidirectional)),
+        )
     }
 
     /// Returns [true] if there is a connection from `source` to
