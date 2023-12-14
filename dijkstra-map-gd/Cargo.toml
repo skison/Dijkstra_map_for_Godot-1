@@ -9,7 +9,7 @@ crate-type = ["cdylib"]
 
 [dependencies]
 fnv = "1.0.7"
-godot = { git = "https://github.com/godot-rust/gdext.git", branch = "master" }
+godot = { git = "https://github.com/godot-rust/gdext.git", branch = "master", features = ["custom-godot"] }
 dijkstra_map = { path = "../dijkstra-map" }
 
 [build-dependencies]

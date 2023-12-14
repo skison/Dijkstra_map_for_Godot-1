@@ -72,7 +72,6 @@ const FAILED: i64 = 1;
 /// point towards the destination and inspected points are assumed to be
 /// origins.
 #[derive(GodotClass, Clone)]
-// #[no_constructor]
 pub struct Interface {
     dijkstra: DijkstraMap,
 }
@@ -112,7 +111,7 @@ fn variant_to_width_and_height(bounds: Variant) -> Option<(usize, usize, usize, 
 }
 
 #[godot_api]
-impl RefCountedVirtual for Interface {
+impl IRefCounted for Interface {
     /// Create a new empty `DijkstraMap`.
     ///
     /// # Example
