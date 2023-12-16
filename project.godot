@@ -14,6 +14,10 @@ config/name="djikstra map for godot"
 run/main_scene="res://addons/dijkstra-map/visualization demo/visualisation.tscn"
 config/features=PackedStringArray("4.2")
 
+[display]
+
+window/stretch/mode="viewport"
+
 [input]
 
 left_mouse_button={
