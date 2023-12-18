@@ -10,13 +10,17 @@ config_version=5
 
 [application]
 
-config/name="djikstra map for godot"
+config/name="dijkstra map for godot"
 run/main_scene="res://addons/dijkstra-map/visualization demo/visualisation.tscn"
-config/features=PackedStringArray("4.2")
+config/features=PackedStringArray("4.2", "C#")
 
 [display]
 
 window/stretch/mode="viewport"
+
+[dotnet]
+
+project/assembly_name="dijkstra map for godot"
 
 [input]
 
@@ -28,4 +32,4 @@ left_mouse_button={
 
 [mono]
 
-project/assembly_name="djikstra map for godot"
+project/assembly_name="dijkstra map for godot"

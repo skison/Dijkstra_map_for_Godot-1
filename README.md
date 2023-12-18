@@ -41,7 +41,7 @@ This will work for linux x64, macos x86 and windows x64 for godot 3.5.1 (for ano
 
 ### Method 2: from Github
 
-**Note**: on linux x64, macos x86 or windows x64, you may skip steps 2-4 and use the pre-compiled libraries in `addons/dijkstra-map/Dijkstra_map_library/bin/<os-name>`. They may be slightly outdated though.
+**Note**: on linux x64, macos x86 or windows x64, you may skip steps 2-4 and use the pre-compiled libraries in `addons/dijkstra-map/dijkstra_map_library/bin/<os-name>`. They may be slightly outdated though.
 
 1. Clone this repository
 2. Install the [Rust compiler](https://www.rust-lang.org/tools/install)
@@ -50,9 +50,9 @@ This will work for linux x64, macos x86 and windows x64 for godot 3.5.1 (for ano
     
 	Note that this might take some time as it compiles all the dependencies for the first time.
 
-    Copy the resulting library to `addons/dijkstra-map/Dijkstra_map_library/bin/<os-name>`.
+    Copy the resulting library to `addons/dijkstra-map/dijkstra_map_library/bin/<os-name>`.
 5. Copy the `addons/dijkstra-map` directory into your project's `res://addons` directory.
-6. Open Godot and add path to the binary file into the `res://addons/dijkstra-map/Dijkstra_map_library/dijkstra_map_library.tres` GDNativeLibrary resource. This resource tells Godot which binary to use for which system. For more info see the [GDNative C example in Godot's documentation](https://docs.godotengine.org/en/stable/tutorials/plugins/gdnative/gdnative-c-example.html).
+6. Open Godot and add path to the binary file into the `res://addons/dijkstra-map/dijkstra_map_library/dijkstra_map_library.tres` GDNativeLibrary resource. This resource tells Godot which binary to use for which system. For more info see the [GDNative C example in Godot's documentation](https://docs.godotengine.org/en/stable/tutorials/plugins/gdnative/gdnative-c-example.html).
 
 ## Examples
 
@@ -131,7 +131,7 @@ Now, during this recalculation, all points, except roads, are completely inacces
 
 ## C# Support
 
-A wrapper located in `addons/dijkstra-map/Dijkstra_map_library/DijkstraMap.cs` can be used to interface with the library. [Example use](#examples) can be seen in `addons/dijkstra-map/visualization demo/visualisation.tscn`. The benefits of this wrapper: 
+A wrapper located in `addons/dijkstra-map/dijkstra_map_library/DijkstraMap.cs` can be used to interface with the library. [Example use](#examples) can be seen in `addons/dijkstra-map/visualization demo/visualisation.tscn`. The benefits of this wrapper: 
 
 * First-class development experience (same as GDScript).
 

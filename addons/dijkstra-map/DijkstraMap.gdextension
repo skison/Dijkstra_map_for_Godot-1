@@ -1,0 +1,13 @@
+[configuration]
+entry_symbol = "gdext_rust_init"
+compatibility_minimum = 4.1
+
+[libraries]
+linux.debug.x86_64 =     "res://addons/dijkstra-map/dijkstra_map_library/bin/linux/libdijkstra_map_gd.so"
+linux.release.x86_64 =   "res://addons/dijkstra-map/dijkstra_map_library/bin/linux/libdijkstra_map_gd.so"
+windows.debug.x86_64 =   "res://addons/dijkstra-map/dijkstra_map_library/bin/windows/dijkstra_map_gd.dll"
+windows.release.x86_64 = "res://addons/dijkstra-map/dijkstra_map_library/bin/windows/dijkstra_map_gd.dll"
+macos.debug =            "res://addons/dijkstra-map/dijkstra_map_library/bin/macos/libdijkstra_map_gd.dylib"
+macos.release =          "res://addons/dijkstra-map/dijkstra_map_library/bin/macos/libdijkstra_map_gd.dylib"
+macos.debug.arm64 =      "res://addons/dijkstra-map/dijkstra_map_library/bin/macos/libdijkstra_map_gd.dylib"
+macos.release.arm64 =    "res://addons/dijkstra-map/dijkstra_map_library/bin/macos/libdijkstra_map_gd.dylib"

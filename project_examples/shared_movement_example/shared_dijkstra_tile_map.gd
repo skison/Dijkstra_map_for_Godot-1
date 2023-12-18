@@ -1,6 +1,6 @@
 extends TileMap
 class_name ExampleSharedDijkstraTileMap
-## This node is responsible for creating and maintaining a DijkstraMap objects for the TileMap it
+## This node is responsible for creating and maintaining DijkstraMap objects for the TileMap it
 ## represents, one each for pikemen and archers.
 ##
 ## Note that because there is only one DijkstraMap for each character type used for calculations, it

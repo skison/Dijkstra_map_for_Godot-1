@@ -5,3 +5,4 @@ Cargo.lock
 /.mono/*
 /.idea/*
 .godot/
+.vs/
