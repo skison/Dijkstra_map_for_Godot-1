@@ -1,10 +1,10 @@
 [gd_scene load_steps=9 format=3 uid="uid://20lfkkq3eql7"]
 
-[ext_resource type="Texture2D" uid="uid://ctax8ksixegb2" path="res://addons/dijkstra-map/visualization demo/arrows.png" id="1"]
-[ext_resource type="Script" path="res://addons/dijkstra-map/visualization demo/visualization.gd" id="1_3868w"]
-[ext_resource type="Script" path="res://addons/dijkstra-map/visualization demo/gridmap.gd" id="2"]
-[ext_resource type="Texture2D" uid="uid://dfrkf6yvapb8h" path="res://addons/dijkstra-map/visualization demo/gradient.png" id="3"]
-[ext_resource type="Script" path="res://addons/dijkstra-map/visualization demo/gridmap_c_sharp.cs" id="4_ah33s"]
+[ext_resource type="Texture2D" uid="uid://ctax8ksixegb2" path="res://addons/dijkstra-map/visualization_demo/arrows.png" id="1"]
+[ext_resource type="Script" path="res://addons/dijkstra-map/visualization_demo/visualization.gd" id="1_3868w"]
+[ext_resource type="Script" path="res://addons/dijkstra-map/visualization_demo/gridmap.gd" id="2"]
+[ext_resource type="Texture2D" uid="uid://dfrkf6yvapb8h" path="res://addons/dijkstra-map/visualization_demo/gradient.png" id="3"]
+[ext_resource type="Script" path="res://addons/dijkstra-map/visualization_demo/gridmap_c_sharp.cs" id="4_ah33s"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_m43vi"]
 texture = ExtResource("1")

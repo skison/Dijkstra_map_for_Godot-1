@@ -59,7 +59,7 @@ This will work for linux x64, macos x86 and windows x64 for godot 3.5.1 (for ano
 ## Examples
 
 There are 3 example scenes in the github repository:
-* `addons/dijkstra-map/visualization demo/visualization.tscn`
+* `addons/dijkstra-map/visualization_demo/visualization.tscn`
 
     Also available through the [asset store installation](#method-1-from-the-asset-store-recommended). Includes C# code. 
 * `project_examples/turn_based_example/turn_based_example.tscn`
@@ -137,7 +137,7 @@ During this recalculation, all points except roads are completely inaccessible, 
 
 ## C# Support
 
-A wrapper located in `addons/dijkstra-map/dijkstra_map_library/DijkstraMap.cs` can be used to interface with the library. [Example use](#examples) can be seen in `addons/dijkstra-map/visualization demo/visualization.tscn`. The benefits of this wrapper: 
+A wrapper located in `addons/dijkstra-map/dijkstra_map_library/DijkstraMap.cs` can be used to interface with the library. [Example use](#examples) can be seen in `addons/dijkstra-map/visualization_demo/visualization.tscn`. The benefits of this wrapper: 
 
 * First-class development experience (same as GDScript).
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dfrkf6yvapb8h"
-path="res://.godot/imported/gradient.png-2a201402bcdc83b12b1164095bf50cb2.ctex"
+uid="uid://ctax8ksixegb2"
+path="res://.godot/imported/arrows.png-bf32d4b7030cc57a6dfcd4f43fcb2f05.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/dijkstra-map/visualization demo/gradient.png"
-dest_files=["res://.godot/imported/gradient.png-2a201402bcdc83b12b1164095bf50cb2.ctex"]
+source_file="res://addons/dijkstra-map/visualization_demo/arrows.png"
+dest_files=["res://.godot/imported/arrows.png-bf32d4b7030cc57a6dfcd4f43fcb2f05.ctex"]
 
 [params]
 
