@@ -13,7 +13,7 @@ fn main() -> Result<(), String> {
     //             BuiltinBackend::Markdown,
     //             PathBuf::from("../addons/dijkstra-map/doc"),
     //         )
-    //         .add_backend(BuiltinBackend::Gut, PathBuf::from("../Tests/unit"))
+    //         .add_backend(BuiltinBackend::Gut, PathBuf::from("../tests/unit"))
     //         .build()?;
 
     //     Ok(())

@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="dijkstra map for godot"
-run/main_scene="res://addons/dijkstra-map/visualization demo/visualisation.tscn"
+run/main_scene="res://addons/dijkstra-map/visualization demo/visualization.tscn"
 config/features=PackedStringArray("4.2", "C#")
 
 [display]
@@ -21,6 +21,10 @@ window/stretch/mode="viewport"
 [dotnet]
 
 project/assembly_name="dijkstra map for godot"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/gut/plugin.cfg")
 
 [input]
 
