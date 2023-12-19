@@ -6,11 +6,4 @@
     <EnableDynamicLoading>true</EnableDynamicLoading>
     <RootNamespace>dijkstramapforgodot</RootNamespace>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Remove="addons\dijkstra-map\dijkstra_map_library\**" />
-    <EmbeddedResource Remove="addons\dijkstra-map\dijkstra_map_library\**" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="addons\dijkstra-map\dijkstra_map_library\DijkstraMap.cs" />
-  </ItemGroup>
 </Project>

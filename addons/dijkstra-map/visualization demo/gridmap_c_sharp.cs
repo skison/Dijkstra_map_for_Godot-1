@@ -37,8 +37,8 @@ public partial class gridmap_c_sharp : TileMap
     private Rect2 TileMapRect = new Rect2(0, 0, 23, 19);
 
     public override void _Ready()
-	{
-		var @event = new InputEventMouseButton();
+    {
+        var @event = new InputEventMouseButton();
         @event.ButtonIndex = MouseButton.Left;
         if (!InputMap.HasAction("left_mouse_button"))
         {
@@ -81,7 +81,7 @@ public partial class gridmap_c_sharp : TileMap
         var dirIds = _dijkstraMap.GetDirectionMap();
         ClearLayer((int)Layers.Directions);
 
-        foreach(var id in dirIds.Keys)
+        foreach (var id in dirIds.Keys)
         {
             var pos = (Vector2I)_idToPos[id];
             var dir = (
@@ -93,7 +93,7 @@ public partial class gridmap_c_sharp : TileMap
 
     private void UpdateTerrainIds()
     {
-        foreach(var id in _idToPos.Keys)
+        foreach (var id in _idToPos.Keys)
         {
             var pos = _idToPos[id];
             _dijkstraMap.SetTerrainForPoint(id, GetTileTypeFromCellPosition((Vector2I)pos));
@@ -130,14 +130,14 @@ public partial class gridmap_c_sharp : TileMap
         return GetArrowTileAtlasPosForType(GetArrowTileTypeForDirection(dir));
     }
 
-        public void OnTerrainSelectionItemSelected(int index)
-	{
+    public void OnTerrainSelectionItemSelected(int index)
+    {
         _tileToDraw = index;
-	}
+    }
 
     public void OnVisualizationSelectionItemSelected(int index)
     {
-        foreach (var layer in new[] { (int)Layers.Costs, (int)Layers.Directions})
+        foreach (var layer in new[] { (int)Layers.Costs, (int)Layers.Directions })
         {
             SetLayerEnabled(layer, index == layer);
         }
