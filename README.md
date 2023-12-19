@@ -172,10 +172,10 @@ You can also run `cargo test` and you're free to look at the Rust tests or contr
 
 Open an Issue before working on a feature, bugfix, or unit test, so we can then discuss it. Then you can work on it (or let someone else) before initiating a pull request.
 
-Before doing a pull request, if you modified the Rust code, be sure you have built it `cargo build --release` and it still works! 
-* The unit tests should pass (cargo test and the GUT tests)
-* All the example scenes (visualization demo and project examples) should run
-* Ensure you have run `cargo fmt` and gdformat on your files 
+Before opening a pull request, if you modified the Rust code, be sure you have built it with `cargo build --release` and it still works! 
+* The unit tests should pass (`cargo test` and the GUT tests)
+* All the example scenes (visualization demo and project examples) should run correctly
+* Ensure you have run `cargo fmt` and `gdformat` (via [GDScript Toolkit](https://github.com/Scony/godot-gdscript-toolkit)) on your files 
 
 
 ## TODO
