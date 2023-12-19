@@ -53,7 +53,7 @@ This will work for linux x64, macos x86 and windows x64 for godot 3.5.1 (for ano
 
     Copy the resulting library to `addons/dijkstra-map/dijkstra_map_library/bin/<os-name>`.
 4. Copy the `addons/dijkstra-map` directory into your project's `res://addons` directory.
-5. Open Godot and add path to the binary file into the `res://addons/dijkstra-map/dijkstra_map_library/dijkstra_map_library.tres` GDNativeLibrary resource. This resource tells Godot which binary to use for which system. For more info see the [GDNative C example in Godot's documentation](https://docs.godotengine.org/en/stable/tutorials/plugins/gdnative/gdnative-c-example.html).
+5. Add your binary file path into the `res://addons/dijkstra-map/dijkstra_map/DijkstraMap.gdextension` file. This file tells Godot which binary to use for which system. For more info see the [GDExtension C++ example in Godot's documentation](https://docs.godotengine.org/en/stable/tutorials/scripting/gdextension/gdextension_cpp_example.html).
 
 
 ## Examples
