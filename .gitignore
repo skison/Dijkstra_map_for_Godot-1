@@ -23,6 +23,7 @@ mono_crash.*.json
 # IDEs
 .idea/
 .vs/
+.vscode/
 
 # Python virtual environment
-venv/
+.venv/

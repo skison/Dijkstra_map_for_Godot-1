@@ -2,6 +2,7 @@
 
 ![](assets/icon.png)
 
+
 ## What it does
 
 Howdy!
@@ -54,9 +55,10 @@ This will work for linux x64, macos x86 and windows x64 for godot 3.5.1 (for ano
 4. Copy the `addons/dijkstra-map` directory into your project's `res://addons` directory.
 5. Open Godot and add path to the binary file into the `res://addons/dijkstra-map/dijkstra_map_library/dijkstra_map_library.tres` GDNativeLibrary resource. This resource tells Godot which binary to use for which system. For more info see the [GDNative C example in Godot's documentation](https://docs.godotengine.org/en/stable/tutorials/plugins/gdnative/gdnative-c-example.html).
 
+
 ## Examples
 
-There are 3 examples scenes in the github repository:
+There are 3 example scenes in the github repository:
 * `addons/dijkstra-map/visualization demo/visualization.tscn`
 
     Also available through the [asset store installation](#method-1-from-the-asset-store-recommended). Includes C# code. 
@@ -71,12 +73,13 @@ Each example scene's scripts contain heavily commented code.
 
 You can also look at the unit tests in `tests/unit/*` for examples of using the DijkstraMap API.
 
+
 ## Features && How-To's
 
 #### Basic Behavior
 
-In Godot project you start by creating a new DijkstraMap Node.
-* First you need to specify the graph by adding points (vertices) and connections between them (edges). Unlike built-in AStar, DijkstraMap does not keep positions of the points (it only ever refers to them by their ID) and the costs of the connections need to be explicitly specified. It is the developer's responsibility to keep track of points' positions. You can add points manually with the `add_point()` and `connect_points()` methods or automatically with `add_*_grid()` methods (`add_square_grid()` or `add_hexagonal_grid()`).
+In your Godot project, you start by creating a new DijkstraMap Node.
+* First you need to specify the graph by adding points (vertices) and connections between them (edges). Unlike the built-in AStar node, DijkstraMap does not keep positions of the points (it only ever refers to them by their ID) and the costs of the connections need to be explicitly specified. It is the developer's responsibility to keep track of points' positions. You can add points manually with the `add_point()` and `connect_points()` methods or automatically with `add_*_grid()` methods (`add_square_grid()` or `add_hexagonal_grid()`).
 
 * Once you've done that, you can enable or disable any points you want from the pathfinding by passing their ids to `enable_point()` or `disable_point()` (points are enabled by default).
 
@@ -131,6 +134,7 @@ my_dijkstra_map.recalculate(origin_point, {"terrain_weights": {Terrain.FOREST: I
 ```
 During this recalculation, all points except roads are completely inaccessible, because their connections have infinite cost. The calculated paths will only follow roads.
 
+
 ## C# Support
 
 A wrapper located in `addons/dijkstra-map/dijkstra_map_library/DijkstraMap.cs` can be used to interface with the library. [Example use](#examples) can be seen in `addons/dijkstra-map/visualization demo/visualization.tscn`. The benefits of this wrapper: 
@@ -156,6 +160,7 @@ A wrapper located in `addons/dijkstra-map/dijkstra_map_library/DijkstraMap.cs` c
 
 Make sure your C# code can find the `DijkstraMap.cs` file and its class.
 
+
 ## Notes
 
 Careful! If you pass arguments of the wrong signature to the Rust API, the game will not crash; if you're lucky and have a terminal open, it might print an error there, but not inside Godot! This issue can be avoided by using a GDScript wrapper but it can lead to non trivial bugs, consider yourself warned.
@@ -168,23 +173,34 @@ You can use the GUT panel in the editor to select and run tests. If this panel d
 
 You can also run `cargo test` and you're free to look at the Rust tests or contribute to them.
 
+
 ## Contributing
 
 Open an Issue before working on a feature, bugfix, or unit test, so we can then discuss it. Then you can work on it (or let someone else) before initiating a pull request.
 
-Before opening a pull request, if you modified the Rust code, be sure you have built it with `cargo build --release` and it still works! 
+Before opening a pull request, please check the following:
+* If you modified the Rust code, be sure you have built it with `cargo build --release` and it still works!
 * The unit tests should pass (`cargo test` and the GUT tests)
 * All the example scenes (visualization demo and project examples) should run correctly
-* Ensure you have run `cargo fmt` and `gdformat` (via [GDScript Toolkit](https://github.com/Scony/godot-gdscript-toolkit)) on your files 
+* Ensure you have run `cargo fmt` and `gdformat` (via [GDScript Toolkit](https://github.com/Scony/godot-gdscript-toolkit)) on your added/edited files
+
+To set up gdformat/GDScript Toolkit, it is recommended to use a Python virtual environment (venv)
+* `python3 -m venv .venv` or `python -m venv .venv` will create a .venv/ folder you can [activate](https://docs.python.org/3/tutorial/venv.html)
+* After activating the venv, verify that you are using Python 3: `python --version`
+* Install GDToolkit: `pip install gdtoolkit==4.*`
+* Run the linter on your GDScript file with `gdlint path/to/file.gd` to show you what needs to be formatted
+* Format your file with `gdformat path/to/file.gd` (careful, data loss is possible), double check linter afterward in case some code couldn't be auto-formatted
 
 
 ## TODO
 
 * if performance on dijkstra is a real heavy consideration, consider implementing threading 
 
+
 ## Use in Projects
 
 - [tacticalRPG](https://github.com/astrale-sharp/tacticalRPG): An in-development framework for creating a tactical rpg using Rust and Godot. 
+
 
 ## Acknowledgments
 * KohuGaly
