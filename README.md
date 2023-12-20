@@ -7,11 +7,11 @@
 
 Howdy!
 
-This is a GDExtension project for the Godot game engine, that introduces a Dijkstra Map pathfinding node. It provides a much needed versatility currently absent from the built-in AStar pathfinding. Its main feature is the ability to populate the entire graph with shortest paths towards a given origin point. Total lengths of shortest paths and directions can then be easily looked up for any point in the graph.
+This is a GDExtension project for the Godot game engine that introduces a DijkstraMap pathfinding node; it provides a much needed versatility currently absent from the built-in AStar pathfinding. Its main feature is the ability to populate an entire graph with the shortest paths leading toward one or more origin point(s). The total lengths of these paths and directions can then be easily looked up for any point in the graph.
 
-Common use cases include: pre-computing pathfinding for tower-defense games, RTS games and roguelikes; listing available moves for turn-based games; aiding in movement-related AI behaviour. You can find more examples in [this amazing article](http://www.roguebasin.com/index.php?title=Dijkstra_Maps_Visualized).
+Common use cases include: pre-computing pathfinding for tower-defense games, RTS games and roguelikes; listing available moves for turn-based games; and aiding in movement-related AI behaviour. You can find more examples in [this amazing article](http://www.roguebasin.com/index.php?title=Dijkstra_Maps_Visualized).
 
-The library is written in the Rust programming language and performance should be comparable to C/C++ (approximately 10-20x faster than GDScript).
+This library is written in the Rust programming language and performance should be comparable to C/C++ (approximately 10-20x faster than GDScript).
 
 Note that the [API](./addons/dijkstra-map/doc/index.md) is now stable! Some features may be added over time.
 
@@ -64,8 +64,8 @@ There are 3 example scenes in the github repository:
     Also available through the [asset store installation](#method-1-from-the-asset-store-recommended). Includes C# code. 
 * `project_examples/turn_based_example/turn_based_example.tscn`
 
-    The `knight` node contains exports variable that can be tweaked
-* `project_examples/shared_movement_examples/shared_movement_example.tscn`
+    The `knight` node contains export variables that can be tweaked.
+* `project_examples/shared_movement_example/shared_movement_example.tscn`
 
 Each example scene's scripts contain heavily commented code.
 
@@ -79,7 +79,7 @@ You can also look at the unit tests in `tests/unit/*` for examples of using the 
 #### Basic Behavior
 
 In your Godot project, you start by creating a new DijkstraMap Node.
-* First you need to specify the graph by adding points (vertices) and connections between them (edges). Unlike the built-in AStar node, DijkstraMap does not keep positions of the points (it only ever refers to them by their ID) and the costs of the connections need to be explicitly specified. It is the developer's responsibility to keep track of points' positions. You can add points manually with the `add_point()` and `connect_points()` methods or automatically with `add_*_grid()` methods (`add_square_grid()` or `add_hexagonal_grid()`).
+* First you need to specify the graph by adding points (vertices) and connections between them (edges). Unlike the built-in AStar node, DijkstraMap does not track point positions (it only ever refers to them by their ID) and the costs of the connections need to be explicitly specified. It is the developer's responsibility to keep track of the points' positions. You can add points manually with the `add_point()` and `connect_points()` methods or automatically with `add_*_grid()` methods (`add_square_grid()` or `add_hexagonal_grid()`).
 
 * Once you've done that, you can enable or disable any points you want from the pathfinding by passing their ids to `enable_point()` or `disable_point()` (points are enabled by default).
 

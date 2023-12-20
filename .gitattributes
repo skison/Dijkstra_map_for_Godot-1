@@ -4,20 +4,21 @@
 # easier, because no files and folders need to
 # be unchecked.
 
-/.git            export-ignore
-/.gitattributes  export-ignore
-/.github         export-ignore
-/.gitignore      export-ignore
-/.import         export-ignore
-/addons/gut      export-ignore
-/assets          export-ignore
-/Cargo.toml      export-ignore
-/dijkstra-map    export-ignore
-/dijkstra-map-gd export-ignore
-/icon.png        export-ignore
-/icon.png.import export-ignore
-/LICENSE         export-ignore
-/project.godot   export-ignore
-/Project_Example export-ignore
-/README.md       export-ignore
-/tests           export-ignore
+/.github                                                        export-ignore
+/addons/gut                                                     export-ignore
+/assets                                                         export-ignore
+/dijkstra-map                                                   export-ignore
+/dijkstra-map-gd                                                export-ignore
+/project_examples                                               export-ignore
+/tests                                                          export-ignore
+/.git                                                           export-ignore
+/.gitattributes                                                 export-ignore
+/.gitignore                                                     export-ignore
+/Cargo.toml                                                     export-ignore
+/LICENSE                                                        export-ignore
+/README.md                                                      export-ignore
+/dijkstra[[:space:]]map[[:space:]]for[[:space:]]godot.csproj    export-ignore
+/dijkstra[[:space:]]map[[:space:]]for[[:space:]]godot.sln       export-ignore
+/icon.png                                                       export-ignore
+/icon.png.import                                                export-ignore
+/project.godot                                                  export-ignore

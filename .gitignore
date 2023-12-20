@@ -27,3 +27,6 @@ mono_crash.*.json
 
 # Python virtual environment
 .venv/
+
+# Windows temp files (e.g. on .dll files when project is open in Godot)
+~*
