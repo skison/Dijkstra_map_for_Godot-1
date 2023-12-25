@@ -1,0 +1,290 @@
+[gd_scene format=4 uid="uid://dpcatanvke6eq"]
+
+[ext_resource type="Script" uid="uid://cmrpofninaid6" path="res://project_examples/astar_maze_comparison/astar_maze_comparison.gd" id="1_pihd3"]
+[ext_resource type="Texture2D" uid="uid://byhpoem2rf2vx" path="res://project_examples/assets/simple_maze_sprites.png" id="2_3ahsc"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_kff6b"]
+texture = ExtResource("2_3ahsc")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_q5ade"]
+tile_size = Vector2i(32, 32)
+sources/0 = SubResource("TileSetAtlasSource_kff6b")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xr0pb"]
+bg_color = Color(0.176471, 0.176471, 0.176471, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0.176471, 0.176471, 0.176471, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="Theme" id="Theme_gwop5"]
+PanelContainer/styles/panel = SubResource("StyleBoxFlat_xr0pb")
+
+[node name="AStarMazeComparison" type="Node" unique_id=735224394]
+script = ExtResource("1_pihd3")
+
+[node name="MainTileLayer" type="TileMapLayer" parent="." unique_id=1684737076]
+unique_name_in_owner = true
+use_parent_material = true
+position = Vector2(20, 20)
+tile_map_data = PackedByteArray("AAAAAAAAAAABAAAAAAAAAAEAAAABAAAAAAAAAAIAAAABAAAAAAAAAAMAAAABAAAAAAAAAAQAAAABAAAAAAAAAAUAAAABAAAAAAAAAAYAAAABAAAAAAAAAAcAAAABAAAAAAAAAAgAAAABAAAAAAAAAAkAAAABAAAAAAABAAkAAAABAAAAAAACAAkAAAABAAAAAAADAAkAAAABAAAAAAAEAAkAAAABAAAAAAAFAAkAAAABAAAAAAAGAAkAAAABAAAAAAAHAAkAAAABAAAAAAAIAAkAAAABAAAAAAAIAAgAAAABAAAAAAAIAAcAAAABAAAAAAAIAAYAAAABAAAAAAAIAAUAAAABAAAAAAAIAAQAAAABAAAAAAAJAAkAAAABAAAAAAAJAAgAAAABAAAAAAAJAAcAAAABAAAAAAAJAAYAAAABAAAAAAAJAAUAAAABAAAAAAAJAAQAAAABAAAAAAAJAAMAAAABAAAAAAAJAAIAAAABAAAAAAAJAAEAAAABAAAAAAAJAAAAAAABAAAAAAAIAAAAAAABAAAAAAAHAAAAAAABAAAAAAAGAAAAAAABAAAAAAAFAAAAAAABAAAAAAAEAAAAAAABAAAAAAAEAAEAAAABAAAAAAADAAEAAAABAAAAAAACAAEAAAABAAAAAAACAAAAAAABAAAAAAABAAAAAAABAAAAAAADAAAAAAABAAAAAAABAAEAAAABAAAAAAABAAIAAAABAAAAAAABAAMAAAABAAAAAAABAAQAAAABAAAAAAABAAUAAAABAAAAAAACAAYAAAABAAAAAAACAAcAAAABAAAAAAACAAgAAAABAAAAAAABAAgAAAABAAAAAAABAAcAAAABAAAAAAABAAYAAAABAAAAAAACAAUAAAABAAAAAAACAAQAAAABAAAAAAACAAMAAAABAAAAAAACAAIAAAABAAAAAAADAAgAAAABAAAAAAAEAAcAAAABAAAAAAAEAAYAAAABAAAAAAAEAAUAAAABAAAAAAAEAAQAAAABAAAAAAADAAQAAAABAAAAAAADAAMAAAABAAAAAAADAAIAAAABAAAAAAADAAcAAAABAAAAAAAFAAYAAAABAAAAAAAFAAUAAAABAAAAAAAEAAMAAAABAAAAAAAEAAIAAAABAAAAAAADAAUAAAABAAAAAAADAAYAAAABAAAAAAAEAAgAAAABAAAAAAAFAAgAAAABAAAAAAAFAAcAAAABAAAAAAAGAAcAAAABAAAAAAAHAAcAAAABAAAAAAAHAAYAAAABAAAAAAAHAAUAAAABAAAAAAAGAAUAAAABAAAAAAAGAAYAAAABAAAAAAAGAAgAAAABAAAAAAAHAAgAAAABAAAAAAAGAAQAAAABAAAAAAAFAAQAAAABAAAAAAAFAAMAAAABAAAAAAAFAAIAAAABAAAAAAAFAAEAAAABAAAAAAAGAAEAAAABAAAAAAAGAAIAAAABAAAAAAAGAAMAAAABAAAAAAAHAAQAAAABAAAAAAAHAAMAAAABAAAAAAAHAAIAAAABAAAAAAAHAAEAAAABAAAAAAAIAAIAAAABAAAAAAAIAAMAAAABAAAAAAAIAAEAAAABAAAAAAAAAAoAAAABAAAAAAABAAoAAAABAAAAAAACAAoAAAABAAAAAAADAAoAAAABAAAAAAAEAAoAAAABAAAAAAAFAAoAAAABAAAAAAAGAAoAAAABAAAAAAAHAAoAAAABAAAAAAAIAAoAAAABAAAAAAAJAAoAAAABAAAAAAAKAAoAAAABAAAAAAAKAAkAAAABAAAAAAAKAAgAAAABAAAAAAAKAAcAAAABAAAAAAAKAAYAAAABAAAAAAAKAAUAAAABAAAAAAAKAAQAAAABAAAAAAAKAAMAAAABAAAAAAAKAAIAAAABAAAAAAAKAAEAAAABAAAAAAAKAAAAAAABAAAAAAAAAAsAAAABAAAAAAAAAAwAAAABAAAAAAAAAA0AAAABAAAAAAAAAA4AAAABAAAAAAAAAA8AAAABAAAAAAAAABAAAAABAAAAAAAAABEAAAABAAAAAAAAABIAAAABAAAAAAABAAsAAAABAAAAAAABAAwAAAABAAAAAAABAA0AAAABAAAAAAABAA4AAAABAAAAAAABAA8AAAABAAAAAAABABAAAAABAAAAAAABABEAAAABAAAAAAABABIAAAABAAAAAAACAAsAAAABAAAAAAACAAwAAAABAAAAAAACAA0AAAABAAAAAAACAA4AAAABAAAAAAACAA8AAAABAAAAAAACABAAAAABAAAAAAACABEAAAABAAAAAAACABIAAAABAAAAAAADAAsAAAABAAAAAAADAAwAAAABAAAAAAADAA0AAAABAAAAAAADAA4AAAABAAAAAAADAA8AAAABAAAAAAADABAAAAABAAAAAAADABEAAAABAAAAAAADABIAAAABAAAAAAAEAAsAAAABAAAAAAAEAAwAAAABAAAAAAAEAA0AAAABAAAAAAAEAA4AAAABAAAAAAAEAA8AAAABAAAAAAAEABAAAAABAAAAAAAEABEAAAABAAAAAAAEABIAAAABAAAAAAAFAAsAAAABAAAAAAAFAAwAAAABAAAAAAAFAA0AAAABAAAAAAAFAA4AAAABAAAAAAAFAA8AAAABAAAAAAAFABAAAAABAAAAAAAFABEAAAABAAAAAAAFABIAAAABAAAAAAAGAAsAAAABAAAAAAAGAAwAAAABAAAAAAAGAA0AAAABAAAAAAAGAA4AAAABAAAAAAAGAA8AAAABAAAAAAAGABAAAAABAAAAAAAGABEAAAABAAAAAAAGABIAAAABAAAAAAAHAAsAAAABAAAAAAAHAAwAAAABAAAAAAAHAA0AAAABAAAAAAAHAA4AAAABAAAAAAAHAA8AAAABAAAAAAAHABAAAAABAAAAAAAHABEAAAABAAAAAAAHABIAAAABAAAAAAAIAAsAAAABAAAAAAAIAAwAAAABAAAAAAAIAA0AAAABAAAAAAAIAA4AAAABAAAAAAAIAA8AAAABAAAAAAAIABAAAAABAAAAAAAIABEAAAABAAAAAAAIABIAAAABAAAAAAAJAAsAAAABAAAAAAAJAAwAAAABAAAAAAAJAA0AAAABAAAAAAAJAA4AAAABAAAAAAAJAA8AAAABAAAAAAAJABAAAAABAAAAAAAJABEAAAABAAAAAAAJABIAAAABAAAAAAAKAAsAAAABAAAAAAAKAAwAAAABAAAAAAAKAA0AAAABAAAAAAAKAA4AAAABAAAAAAAKAA8AAAABAAAAAAAKABAAAAABAAAAAAAKABEAAAABAAAAAAAKABIAAAABAAAAAAALAAAAAAABAAAAAAALAAEAAAABAAAAAAALAAIAAAABAAAAAAALAAMAAAABAAAAAAALAAQAAAABAAAAAAALAAUAAAABAAAAAAALAAYAAAABAAAAAAALAAcAAAABAAAAAAALAAgAAAABAAAAAAALAAkAAAABAAAAAAALAAoAAAABAAAAAAALAAsAAAABAAAAAAALAAwAAAABAAAAAAALAA0AAAABAAAAAAALAA4AAAABAAAAAAALAA8AAAABAAAAAAALABAAAAABAAAAAAALABEAAAABAAAAAAALABIAAAABAAAAAAAMAAAAAAABAAAAAAAMAAEAAAABAAAAAAAMAAIAAAABAAAAAAAMAAMAAAABAAAAAAAMAAQAAAABAAAAAAAMAAUAAAABAAAAAAAMAAYAAAABAAAAAAAMAAcAAAABAAAAAAAMAAgAAAABAAAAAAAMAAkAAAABAAAAAAAMAAoAAAABAAAAAAAMAAsAAAABAAAAAAAMAAwAAAABAAAAAAAMAA0AAAABAAAAAAAMAA4AAAABAAAAAAAMAA8AAAABAAAAAAAMABAAAAABAAAAAAAMABEAAAABAAAAAAAMABIAAAABAAAAAAANAAAAAAABAAAAAAANAAEAAAABAAAAAAANAAIAAAABAAAAAAANAAMAAAABAAAAAAANAAQAAAABAAAAAAANAAUAAAABAAAAAAANAAYAAAABAAAAAAANAAcAAAABAAAAAAANAAgAAAABAAAAAAANAAkAAAABAAAAAAANAAoAAAABAAAAAAANAAsAAAABAAAAAAANAAwAAAABAAAAAAANAA0AAAABAAAAAAANAA4AAAABAAAAAAANAA8AAAABAAAAAAANABAAAAABAAAAAAANABEAAAABAAAAAAANABIAAAABAAAAAAAOAAAAAAABAAAAAAAOAAEAAAABAAAAAAAOAAIAAAABAAAAAAAOAAMAAAABAAAAAAAOAAQAAAABAAAAAAAOAAUAAAABAAAAAAAOAAYAAAABAAAAAAAOAAcAAAABAAAAAAAOAAgAAAABAAAAAAAOAAkAAAABAAAAAAAOAAoAAAABAAAAAAAOAAsAAAABAAAAAAAOAAwAAAABAAAAAAAOAA0AAAABAAAAAAAOAA4AAAABAAAAAAAOAA8AAAABAAAAAAAOABAAAAABAAAAAAAOABEAAAABAAAAAAAOABIAAAABAAAAAAAPAAAAAAABAAAAAAAPAAEAAAABAAAAAAAPAAIAAAABAAAAAAAPAAMAAAABAAAAAAAPAAQAAAABAAAAAAAPAAUAAAABAAAAAAAPAAYAAAABAAAAAAAPAAcAAAABAAAAAAAPAAgAAAABAAAAAAAPAAkAAAABAAAAAAAPAAoAAAABAAAAAAAPAAsAAAABAAAAAAAPAAwAAAABAAAAAAAPAA0AAAABAAAAAAAPAA4AAAABAAAAAAAPAA8AAAABAAAAAAAPABAAAAABAAAAAAAPABEAAAABAAAAAAAPABIAAAABAAAAAAAQAAAAAAABAAAAAAAQAAEAAAABAAAAAAAQAAIAAAABAAAAAAAQAAMAAAABAAAAAAAQAAQAAAABAAAAAAAQAAUAAAABAAAAAAAQAAYAAAABAAAAAAAQAAcAAAABAAAAAAAQAAgAAAABAAAAAAAQAAkAAAABAAAAAAAQAAoAAAABAAAAAAAQAAsAAAABAAAAAAAQAAwAAAABAAAAAAAQAA0AAAABAAAAAAAQAA4AAAABAAAAAAAQAA8AAAABAAAAAAAQABAAAAABAAAAAAAQABEAAAABAAAAAAAQABIAAAABAAAAAAARAAAAAAABAAAAAAARAAEAAAABAAAAAAARAAIAAAABAAAAAAARAAMAAAABAAAAAAARAAQAAAABAAAAAAARAAUAAAABAAAAAAARAAYAAAABAAAAAAARAAcAAAABAAAAAAARAAgAAAABAAAAAAARAAkAAAABAAAAAAARAAoAAAABAAAAAAARAAsAAAABAAAAAAARAAwAAAABAAAAAAARAA0AAAABAAAAAAARAA4AAAABAAAAAAARAA8AAAABAAAAAAARABAAAAABAAAAAAARABEAAAABAAAAAAARABIAAAABAAAAAAASAAAAAAABAAAAAAASAAEAAAABAAAAAAASAAIAAAABAAAAAAASAAMAAAABAAAAAAASAAQAAAABAAAAAAASAAUAAAABAAAAAAASAAYAAAABAAAAAAASAAcAAAABAAAAAAASAAgAAAABAAAAAAASAAkAAAABAAAAAAASAAoAAAABAAAAAAASAAsAAAABAAAAAAASAAwAAAABAAAAAAASAA0AAAABAAAAAAASAA4AAAABAAAAAAASAA8AAAABAAAAAAASABAAAAABAAAAAAASABEAAAABAAAAAAASABIAAAABAAAAAAA=")
+tile_set = SubResource("TileSet_q5ade")
+
+[node name="PathTileLayer" type="TileMapLayer" parent="." unique_id=149971378]
+unique_name_in_owner = true
+use_parent_material = true
+position = Vector2(20, 20)
+tile_set = SubResource("TileSet_q5ade")
+
+[node name="PointsTileLayer" type="TileMapLayer" parent="." unique_id=1254786484]
+unique_name_in_owner = true
+use_parent_material = true
+position = Vector2(20, 20)
+tile_set = SubResource("TileSet_q5ade")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=75484404]
+anchors_preset = -1
+anchor_left = 0.742
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 2
+theme = SubResource("Theme_gwop5")
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1976564623]
+layout_mode = 2
+theme_override_constants/separation = 9
+
+[node name="Step1Container" type="PanelContainer" parent="MarginContainer/VBoxContainer" unique_id=167353013]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Step1Container" unique_id=2012828929]
+layout_mode = 2
+
+[node name="Step1Label" type="Label" parent="MarginContainer/VBoxContainer/Step1Container/VBoxContainer" unique_id=253269774]
+layout_mode = 2
+text = "Step 1: Maze Generation"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer/Step1Container/VBoxContainer" unique_id=605832668]
+layout_mode = 2
+
+[node name="SeedContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Step1Container/VBoxContainer" unique_id=875353752]
+layout_mode = 2
+
+[node name="SeedInput" type="SpinBox" parent="MarginContainer/VBoxContainer/Step1Container/VBoxContainer/SeedContainer" unique_id=735447569]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+max_value = 100000.0
+prefix = "Seed:"
+
+[node name="RandomSeedButton" type="Button" parent="MarginContainer/VBoxContainer/Step1Container/VBoxContainer/SeedContainer" unique_id=2074999048]
+layout_mode = 2
+text = "Random"
+
+[node name="DimensionsContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Step1Container/VBoxContainer" unique_id=1687001968]
+layout_mode = 2
+
+[node name="WidthInput" type="SpinBox" parent="MarginContainer/VBoxContainer/Step1Container/VBoxContainer/DimensionsContainer" unique_id=1569334782]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 1.0
+max_value = 150.0
+value = 1.0
+prefix = "Width:"
+
+[node name="HeightInput" type="SpinBox" parent="MarginContainer/VBoxContainer/Step1Container/VBoxContainer/DimensionsContainer" unique_id=1066499993]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 1.0
+max_value = 150.0
+value = 1.0
+prefix = "Height:"
+
+[node name="GenerateMazeButton" type="Button" parent="MarginContainer/VBoxContainer/Step1Container/VBoxContainer" unique_id=190125252]
+layout_mode = 2
+text = "Generate Maze"
+
+[node name="Step2Container" type="PanelContainer" parent="MarginContainer/VBoxContainer" unique_id=1350201955]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Step2Container" unique_id=2107747423]
+layout_mode = 2
+
+[node name="Step2Label" type="Label" parent="MarginContainer/VBoxContainer/Step2Container/VBoxContainer" unique_id=587800380]
+layout_mode = 2
+text = "Step 2: Set Start and End Points"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer/Step2Container/VBoxContainer" unique_id=244459572]
+layout_mode = 2
+
+[node name="StartPosContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Step2Container/VBoxContainer" unique_id=174621385]
+layout_mode = 2
+
+[node name="StartPosTitleLabel" type="Label" parent="MarginContainer/VBoxContainer/Step2Container/VBoxContainer/StartPosContainer" unique_id=1102107740]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Start Position:"
+
+[node name="StartPosCoordsLabel" type="Label" parent="MarginContainer/VBoxContainer/Step2Container/VBoxContainer/StartPosContainer" unique_id=901542107]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "(0, 0)"
+
+[node name="HSeparator2" type="HSeparator" parent="MarginContainer/VBoxContainer/Step2Container/VBoxContainer" unique_id=1450337337]
+layout_mode = 2
+
+[node name="EndPosContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Step2Container/VBoxContainer" unique_id=1642442440]
+layout_mode = 2
+
+[node name="EndPosTitleLabel" type="Label" parent="MarginContainer/VBoxContainer/Step2Container/VBoxContainer/EndPosContainer" unique_id=97079719]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "End Positions:"
+
+[node name="EndPosListContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/Step2Container/VBoxContainer/EndPosContainer" unique_id=1828846562]
+custom_minimum_size = Vector2(0, 90)
+layout_mode = 2
+size_flags_horizontal = 3
+horizontal_scroll_mode = 0
+
+[node name="EndPosListLabel" type="Label" parent="MarginContainer/VBoxContainer/Step2Container/VBoxContainer/EndPosContainer/EndPosListContainer" unique_id=576722600]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "(0, 0)
+(3, 4)
+(43, 21)
+(99. 100)
+(20, 2)"
+
+[node name="Step3Container" type="PanelContainer" parent="MarginContainer/VBoxContainer" unique_id=955315722]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Step3Container" unique_id=1660612642]
+layout_mode = 2
+
+[node name="Step3Label" type="Label" parent="MarginContainer/VBoxContainer/Step3Container/VBoxContainer" unique_id=971904563]
+layout_mode = 2
+text = "Step 3: Solve w/DijkstraMap and AStar"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer/Step3Container/VBoxContainer" unique_id=1415582765]
+layout_mode = 2
+
+[node name="UseGridMethodsButton" type="CheckButton" parent="MarginContainer/VBoxContainer/Step3Container/VBoxContainer" unique_id=147831351]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Use Grid Methods"
+
+[node name="SolveMazeButton" type="Button" parent="MarginContainer/VBoxContainer/Step3Container/VBoxContainer" unique_id=920428128]
+layout_mode = 2
+text = "Solve Maze"
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/VBoxContainer" unique_id=265106111]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/PanelContainer" unique_id=832242721]
+layout_mode = 2
+
+[node name="ResultsLabel" type="Label" parent="MarginContainer/VBoxContainer/PanelContainer/VBoxContainer" unique_id=1847792439]
+layout_mode = 2
+text = "Results"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer/PanelContainer/VBoxContainer" unique_id=1878518829]
+layout_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer/PanelContainer/VBoxContainer" unique_id=1387056296]
+layout_mode = 2
+columns = 3
+
+[node name="BlankLabel" type="Label" parent="MarginContainer/VBoxContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=608950025]
+layout_mode = 2
+
+[node name="DijkstraMapLabel" type="Label" parent="MarginContainer/VBoxContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=71339604]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "DijkstraMap"
+horizontal_alignment = 1
+
+[node name="AStarLabel" type="Label" parent="MarginContainer/VBoxContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=2027696128]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "AStar"
+horizontal_alignment = 1
+
+[node name="GraphSetupTimeLabel" type="Label" parent="MarginContainer/VBoxContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=1964639834]
+layout_mode = 2
+text = "Graph Setup"
+horizontal_alignment = 2
+
+[node name="DijkstraGraphSetupTimeLabel" type="Label" parent="MarginContainer/VBoxContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=1150377534]
+unique_name_in_owner = true
+layout_mode = 2
+text = "0ms"
+horizontal_alignment = 1
+
+[node name="AStarGraphSetupTimeLabel" type="Label" parent="MarginContainer/VBoxContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=114347507]
+unique_name_in_owner = true
+layout_mode = 2
+text = "0ms"
+horizontal_alignment = 1
+
+[node name="SolveStepTimeLabel" type="Label" parent="MarginContainer/VBoxContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=13876148]
+layout_mode = 2
+text = "Solve Step"
+horizontal_alignment = 2
+
+[node name="DijkstraSolveStepTimeLabel" type="Label" parent="MarginContainer/VBoxContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=400026117]
+unique_name_in_owner = true
+layout_mode = 2
+text = "0ms"
+horizontal_alignment = 1
+
+[node name="AStarSolveStepTimeLabel" type="Label" parent="MarginContainer/VBoxContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=346851933]
+unique_name_in_owner = true
+layout_mode = 2
+text = "0ms"
+horizontal_alignment = 1
+
+[node name="TotalTimeLabel" type="Label" parent="MarginContainer/VBoxContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=455120368]
+layout_mode = 2
+text = "Total"
+horizontal_alignment = 2
+
+[node name="DijkstraTotalTimeLabel" type="Label" parent="MarginContainer/VBoxContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=166765591]
+unique_name_in_owner = true
+layout_mode = 2
+text = "0ms"
+horizontal_alignment = 1
+
+[node name="AStarTotalTimeLabel" type="Label" parent="MarginContainer/VBoxContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=1984985269]
+unique_name_in_owner = true
+layout_mode = 2
+text = "0ms"
+horizontal_alignment = 1
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Step1Container/VBoxContainer/SeedContainer/RandomSeedButton" to="." method="_on_random_seed_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Step1Container/VBoxContainer/GenerateMazeButton" to="." method="generate_maze"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Step3Container/VBoxContainer/SolveMazeButton" to="." method="solve_maze"]
