@@ -30,7 +30,7 @@ const PROJECT_DEMOS = {
 	"visualization_demo": "res://addons/dijkstra-map/visualization_demo/visualization.tscn",
 	"turn_based_movement": "res://project_examples/turn_based_example/turn_based_example.tscn",
 	"shared_movement": "res://project_examples/shared_movement_example/shared_movement_example.tscn",
-	"astar_comparison": null
+	"astar_comparison": "res://project_examples/astar_maze_comparison/astar_maze_comparison.tscn"
 }
 
 ## On ready, generate a DijkstraMap for the tilemap cells, generate a Dijkstra image that represents
@@ -43,7 +43,7 @@ func _ready():
 	for i in map_bounds.size.x - 1:
 		for j in map_bounds.size.y - 1:
 			var tilemap_coords := Vector2i(i, j)
-			var tile_atlas_coords : Vector2i = tilemap.get_cell_atlas_coords(0, tilemap_coords)
+			var tile_atlas_coords : Vector2i = tilemap.get_cell_atlas_coords(TILE_LAYER, tilemap_coords)
 			var tile_type = TILE_ATLAS_COORDS.find_key(tile_atlas_coords)
 			
 			if tile_type == Tiles.DEFAULT or tile_type == Tiles.ENDPOINT:
@@ -100,8 +100,8 @@ func tilemap_coords_to_dijkstra_id(coords: Vector2i) -> int:
 func dijkstra_id_to_tilemap_coords(id: int) -> Vector2i:
 	@warning_ignore("integer_division")
 	return Vector2i(
-		id / map_bounds.size.x,
-		id % map_bounds.size.x
+		id % map_bounds.size.x,
+		id / map_bounds.size.x
 	)
 
 ## Load up one of the demo projects.
