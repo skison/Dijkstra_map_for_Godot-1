@@ -659,6 +659,7 @@ impl DijkstraMap {
                 VariantType::StringName => "StringName",
                 VariantType::Callable => "Callable",
                 VariantType::Signal => "Signal",
+                VariantType => "VariantType",
             }
         }
 
