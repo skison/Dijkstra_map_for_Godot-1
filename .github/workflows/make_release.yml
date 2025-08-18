@@ -34,7 +34,7 @@ jobs:
           args: --release --verbose -p dijkstra_map_gd
       - name: Strip library file
         run: strip target/release/libdijkstra_map_gd.so
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: libdijkstra_map_gd.so
           path: target/release/libdijkstra_map_gd.so
@@ -62,7 +62,7 @@ jobs:
         with:
           command: build
           args: --release --verbose -p dijkstra_map_gd --target x86_64-pc-windows-gnu
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: dijkstra_map_gd.dll
           path: target/x86_64-pc-windows-gnu/release/dijkstra_map_gd.dll
@@ -86,7 +86,7 @@ jobs:
         with:
           command: build
           args: --release -p dijkstra_map_gd
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: libdijkstra_map_gd.dylib
           path: target/release/libdijkstra_map_gd.dylib
