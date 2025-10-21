@@ -10,6 +10,9 @@
 # It is necessary to install emscripten and enable the emsdk env for web builds to work.
 # Tested with emscripten 3.1.74.
 
+# This build script is intended for local testing builds only. For releases, use the make_release
+# GitHub Action.
+
 if [ $# -ne 2 ]; then
     echo "Usage: $0 <platform> <profile>"
     echo "  platform: windows | linux | mac | mac_arm | web_threads | web_nothreads"
@@ -119,7 +122,7 @@ DEST_PATH="${BIN_DIR}/${OUTPUT_FILE}"
 rustup target add $PLATFORM
 
 # Start build
-echo "📦 Building $CRATE_NAME for $PLATFORM ($CHOSEN_PLATFORM) [$CHOSEN_PROFILE]..."
+echo "Building $CRATE_NAME for $PLATFORM ($CHOSEN_PLATFORM) [$CHOSEN_PROFILE]..."
 export RUSTFLAGS=$PLATFORM_RUSTFLAGS
 cargo $PLATFORM_CUSTOM_TOOLCHAIN build $PLATFORM_CARGO_FLAGS $PROFILE_CARGO_FLAGS --target $PLATFORM
 
