@@ -31,13 +31,13 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --release --verbose -p dijkstra_map_gd
+          args: --release --verbose -p dijkstra_map_gd.linux.release
       - name: Strip library file
-        run: strip target/release/libdijkstra_map_gd.so
+        run: strip target/release/libdijkstra_map_gd.linux.release.so
       - uses: actions/upload-artifact@v4
         with:
-          name: libdijkstra_map_gd.so
-          path: target/release/libdijkstra_map_gd.so
+          name: libdijkstra_map_gd.linux.release.so
+          path: target/release/libdijkstra_map_gd.linux.release.so
 
   # This jobs running on ubuntu-latest may be surprising : it's because I
   # couldn't make the build succeed on windows, but using the
@@ -61,11 +61,11 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --release --verbose -p dijkstra_map_gd --target x86_64-pc-windows-gnu
+          args: --release --verbose -p dijkstra_map_gd.windows.release --target x86_64-pc-windows-gnu
       - uses: actions/upload-artifact@v4
         with:
-          name: dijkstra_map_gd.dll
-          path: target/x86_64-pc-windows-gnu/release/dijkstra_map_gd.dll
+          name: dijkstra_map_gd.windows.release.dll
+          path: target/x86_64-pc-windows-gnu/release/dijkstra_map_gd.windows.release.dll
 
   build-macos:
     runs-on: macos-latest
@@ -85,11 +85,11 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --release -p dijkstra_map_gd
+          args: --release -p dijkstra_map_gd.mac.release
       - uses: actions/upload-artifact@v4
         with:
-          name: libdijkstra_map_gd.dylib
-          path: target/release/libdijkstra_map_gd.dylib
+          name: libdijkstra_map_gd.mac.release.dylib
+          path: target/release/libdijkstra_map_gd.mac.release.dylib
 
   commit:
     runs-on: ubuntu-latest
@@ -98,21 +98,21 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Download libdijkstra_map_gd.so
+      - name: Download libdijkstra_map_gd.linux.release.so
         uses: actions/download-artifact@v3
         with:
-          name: libdijkstra_map_gd.so
-          path: addons/dijkstra-map/dijkstra_map_library/bin/linux/
-      - name: Download dijkstra_map_gd.dll
+          name: libdijkstra_map_gd.linux.release.so
+          path: addons/dijkstra-map/dijkstra_map_library/bin/
+      - name: Download dijkstra_map_gd.windows.release.dll
         uses: actions/download-artifact@v3
         with:
-          name: dijkstra_map_gd.dll
-          path: addons/dijkstra-map/dijkstra_map_library/bin/windows/
-      - name: Download libdijkstra_map_gd.dylib
+          name: dijkstra_map_gd.windows.release.dll
+          path: addons/dijkstra-map/dijkstra_map_library/bin/
+      - name: Download libdijkstra_map_gd.mac.release.dylib
         uses: actions/download-artifact@v3
         with:
-          name: libdijkstra_map_gd.dylib
-          path: addons/dijkstra-map/dijkstra_map_library/bin/macos/
+          name: libdijkstra_map_gd.mac.release.dylib
+          path: addons/dijkstra-map/dijkstra_map_library/bin/
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: "Release ${{ github.event.inputs.version }}\n${{ github.event.inputs.body }}"

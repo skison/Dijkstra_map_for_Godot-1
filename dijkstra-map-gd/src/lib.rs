@@ -632,6 +632,21 @@ impl DijkstraMap {
             INITIAL_COSTS,
         ];
 
+        // NOTE: godot_name() was deprecated in 0.3.5, see:
+        // https://docs.rs/godot/0.3.5/godot/obj/trait.EngineEnum.html#tymethod.godot_name
+        // Now we must find the mapping of type enums to their godot names.
+        // We could use a hashmap for performance if needed, but currently we only need to look up
+        // names in case of a type mismatch, which should be very rare (and indicates a bigger
+        // problem in the code that should be fixed).
+        fn variant_type_to_godot_name(vt: VariantType) -> &'static str {
+            for constant in VariantType::all_constants() {
+                if constant.value().ord() == vt.ord() {
+                    return constant.godot_name()
+                }
+            }
+            "Unknown VariantType"
+        }
+
         /// Helper function for type warnings
         ///
         /// Ensure the style of warning reporting is consistent.
@@ -641,8 +656,8 @@ impl DijkstraMap {
                 file!(),
                 line,
                 object,
-                expected.godot_name(),
-                got.godot_name()
+                variant_type_to_godot_name(expected),
+                variant_type_to_godot_name(got)
             );
         }
 
