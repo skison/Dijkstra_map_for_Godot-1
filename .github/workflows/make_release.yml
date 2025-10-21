@@ -32,6 +32,10 @@ jobs:
         with:
           command: build
           args: --release --verbose -p dijkstra_map_gd
+      - name: Temp Debug printout 1
+        run: ls -a target/
+      - name: Temp Debu printout 2
+        run: ls -a target/release/
       - name: Rename library file
         run: mv target/release/dijkstra_map_gd.so target/release/dijkstra_map_gd.linux.release.so
       - name: Strip library file
@@ -64,8 +68,14 @@ jobs:
         with:
           command: build
           args: --release --verbose -p dijkstra_map_gd --target x86_64-pc-windows-gnu
+      - name: Temp Debug printout 1
+        run: ls -a target/
+      - name: Temp Debug printout 2
+        run: ls -a target/x86_64-pc-windows-gnu/
+      - name: Temp Debug printout 3
+        run: ls -a target/x86_64-pc-windows-gnu/release/
       - name: Rename library file
-        run: mv target/x86_64-pc-windows-gnu/release/dijkstra_map_gd.dll target/release/x86_64-pc-windows-gnu/dijkstra_map_gd.windows.release.dll
+        run: mv target/x86_64-pc-windows-gnu/release/dijkstra_map_gd.dll target/x86_64-pc-windows-gnu/release/dijkstra_map_gd.windows.release.dll
       - uses: actions/upload-artifact@v4
         with:
           name: dijkstra_map_gd.windows.release.dll
@@ -90,6 +100,10 @@ jobs:
         with:
           command: build
           args: --release -p dijkstra_map_gd
+      - name: Temp Debug printout 1
+        run: ls -a target/
+      - name: Temp Debug printout 2
+        run: ls -a target/release/
       - name: Rename library file
         run: mv target/release/dijkstra_map_gd.dylib target/release/dijkstra_map_gd.mac.release.dylib
       - uses: actions/upload-artifact@v4
