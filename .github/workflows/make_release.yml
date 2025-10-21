@@ -31,9 +31,9 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --release --verbose -p dijkstra_map_gd-release
+          args: --release --verbose -p dijkstra_map_gd
       - name: Rename library file
-        run: mv target/release/dijkstra_map_gd-release.so target/release/dijkstra_map_gd.linux.release.so
+        run: mv target/release/dijkstra_map_gd.so target/release/dijkstra_map_gd.linux.release.so
       - name: Strip library file
         run: strip target/release/dijkstra_map_gd.linux.release.so
       - uses: actions/upload-artifact@v4
@@ -63,9 +63,9 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --release --verbose -p dijkstra_map_gd-release --target x86_64-pc-windows-gnu
+          args: --release --verbose -p dijkstra_map_gd --target x86_64-pc-windows-gnu
       - name: Rename library file
-        run: mv target/x86_64-pc-windows-gnu/release/dijkstra_map_gd-release.dll target/release/x86_64-pc-windows-gnu/dijkstra_map_gd.windows.release.dll
+        run: mv target/x86_64-pc-windows-gnu/release/dijkstra_map_gd.dll target/release/x86_64-pc-windows-gnu/dijkstra_map_gd.windows.release.dll
       - uses: actions/upload-artifact@v4
         with:
           name: dijkstra_map_gd.windows.release.dll
@@ -89,9 +89,9 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --release -p dijkstra_map_gd-release
+          args: --release -p dijkstra_map_gd
       - name: Rename library file
-        run: mv target/release/dijkstra_map_gd-release.dylib target/release/dijkstra_map_gd.mac.release.dylib
+        run: mv target/release/dijkstra_map_gd.dylib target/release/dijkstra_map_gd.mac.release.dylib
       - uses: actions/upload-artifact@v4
         with:
           name: dijkstra_map_gd.mac.release.dylib
