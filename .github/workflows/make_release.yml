@@ -80,11 +80,15 @@ jobs:
         with:
           command: build
           args: --release --verbose -p dijkstra_map_gd --target x86_64-pc-windows-msvc
+      - name: Temp debug printout 1
+        run: ls -a target/
+      - name: Temp debug printout 2
+        run: ls -a target/x86_64-pc-windows-msvc/
       - name: Rename and group library files
         run: |
           mkdir artifacts
-          mv target/debug/dijkstra_map_gd.dll artifacts/dijkstra_map_gd.windows.debug.dll
-          mv target/release/dijkstra_map_gd.dll artifacts/dijkstra_map_gd.windows.release.dll
+          mv target/x86_64-pc-windows-msvc/debug/dijkstra_map_gd.dll artifacts/dijkstra_map_gd.windows.debug.dll
+          mv target/x86_64-pc-windows-msvc/release/dijkstra_map_gd.dll artifacts/dijkstra_map_gd.windows.release.dll
       - uses: actions/upload-artifact@v4
         with:
           name: dijkstra_map_gd.windows.debug.dll
