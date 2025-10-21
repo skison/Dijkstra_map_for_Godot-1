@@ -70,7 +70,7 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-          target: x86_64-pc-windows-gnu
+          target: x86_64-pc-windows-msvc
       - uses: Swatinem/rust-cache@v2
       # we need a windows linker
       - name: Install gcc-mingw-w64-x86-64 linker
@@ -78,16 +78,16 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --verbose -p dijkstra_map_gd --target x86_64-pc-windows-gnu
+          args: --verbose -p dijkstra_map_gd --target x86_64-pc-windows-msvc
       - uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --release --verbose -p dijkstra_map_gd --target x86_64-pc-windows-gnu
+          args: --release --verbose -p dijkstra_map_gd --target x86_64-pc-windows-msvc
       - name: Rename and group library files
         run: |
           mkdir artifacts
-          mv target/x86_64-pc-windows-gnu/debug/dijkstra_map_gd.dll artifacts/dijkstra_map_gd.windows.debug.dll
-          mv target/x86_64-pc-windows-gnu/release/dijkstra_map_gd.dll artifacts/dijkstra_map_gd.windows.release.dll
+          mv target/x86_64-pc-windows-msvc/debug/dijkstra_map_gd.dll artifacts/dijkstra_map_gd.windows.debug.dll
+          mv target/x86_64-pc-windows-msvc/release/dijkstra_map_gd.dll artifacts/dijkstra_map_gd.windows.release.dll
       - uses: actions/upload-artifact@v4
         with:
           name: dijkstra_map_gd.windows.debug.dll
@@ -134,6 +134,44 @@ jobs:
         with:
           name: dijkstra_map_gd.mac.release.dylib
           path: artifacts/dijkstra_map_gd.mac.release.dylib
+  
+  # Build both debug and release versions for MacOS ARM
+  build-macos:
+    runs-on: macos-latest
+
+    strategy:
+      fail-fast: true
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: aarch64-apple-darwin
+          default: true
+          override: true
+      - uses: Swatinem/rust-cache@v2
+      - uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: -p dijkstra_map_gd
+      - uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release -p dijkstra_map_gd
+      - name: Rename and group library files
+        run: |
+          mkdir artifacts
+          mv target/debug/libdijkstra_map_gd.dylib artifacts/dijkstra_map_gd.mac_arm.debug.dylib
+          mv target/release/libdijkstra_map_gd.dylib artifacts/dijkstra_map_gd.mac_arm.release.dylib
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dijkstra_map_gd.mac_arm.debug.dylib
+          path: artifacts/dijkstra_map_gd.mac_arm.debug.dylib
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dijkstra_map_gd.mac_arm.release.dylib
+          path: artifacts/dijkstra_map_gd.mac_arm.release.dylib
 
   commit:
     runs-on: ubuntu-latest
@@ -142,6 +180,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
       - name: Download dijkstra_map_gd.linux.debug.so
         uses: actions/download-artifact@v4
         with:
@@ -152,6 +191,7 @@ jobs:
         with:
           name: dijkstra_map_gd.linux.release.so
           path: addons/dijkstra-map/dijkstra_map_library/bin/
+      
       - name: Download dijkstra_map_gd.windows.debug.dll
         uses: actions/download-artifact@v4
         with:
@@ -162,6 +202,7 @@ jobs:
         with:
           name: dijkstra_map_gd.windows.release.dll
           path: addons/dijkstra-map/dijkstra_map_library/bin/
+      
       - name: Download dijkstra_map_gd.mac.debug.dylib
         uses: actions/download-artifact@v4
         with:
@@ -172,6 +213,18 @@ jobs:
         with:
           name: dijkstra_map_gd.mac.release.dylib
           path: addons/dijkstra-map/dijkstra_map_library/bin/
+      
+      - name: Download dijkstra_map_gd.mac_arm.debug.dylib
+        uses: actions/download-artifact@v4
+        with:
+          name: dijkstra_map_gd.mac_arm.debug.dylib
+          path: addons/dijkstra-map/dijkstra_map_library/bin/
+      - name: Download dijkstra_map_gd.mac_arm.release.dylib
+        uses: actions/download-artifact@v4
+        with:
+          name: dijkstra_map_gd.mac_arm.release.dylib
+          path: addons/dijkstra-map/dijkstra_map_library/bin/
+
       - uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: "Release ${{ github.event.inputs.version }}\n${{ github.event.inputs.body }}"
