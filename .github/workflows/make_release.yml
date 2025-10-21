@@ -16,6 +16,7 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
+  # Build both debug and release versions for Linux
   build-linux:
     runs-on: ubuntu-latest
 
@@ -31,16 +32,30 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: build
+          args: --verbose -p dijkstra_map_gd
+      - uses: actions-rs/cargo@v1
+        with:
+          command: build
           args: --release --verbose -p dijkstra_map_gd
-      - name: Rename library file
-        run: mv target/release/libdijkstra_map_gd.so target/release/dijkstra_map_gd.linux.release.so
-      - name: Strip library file
-        run: strip target/release/dijkstra_map_gd.linux.release.so
+      - name: Rename and group library files
+        run: |
+          mkdir artifacts
+          mv target/debug/libdijkstra_map_gd.so artifacts/dijkstra_map_gd.linux.debug.so
+          mv target/release/libdijkstra_map_gd.so artifacts/dijkstra_map_gd.linux.release.so
+      - name: Strip library files
+        run: |
+          strip artifacts/dijkstra_map_gd.linux.debug.so
+          strip artifacts/dijkstra_map_gd.linux.release.so
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dijkstra_map_gd.linux.debug.so
+          path: artifacts/dijkstra_map_gd.linux.debug.so
       - uses: actions/upload-artifact@v4
         with:
           name: dijkstra_map_gd.linux.release.so
-          path: target/release/dijkstra_map_gd.linux.release.so
+          path: artifacts/dijkstra_map_gd.linux.release.so
 
+  # Build both debug and release versions for Windows
   # This jobs running on ubuntu-latest may be surprising : it's because I
   # couldn't make the build succeed on windows, but using the
   # x86_64-pc-windows-gnu on linux works perfectly well.
@@ -63,14 +78,26 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: build
+          args: --verbose -p dijkstra_map_gd --target x86_64-pc-windows-gnu
+      - uses: actions-rs/cargo@v1
+        with:
+          command: build
           args: --release --verbose -p dijkstra_map_gd --target x86_64-pc-windows-gnu
-      - name: Rename library file
-        run: mv target/x86_64-pc-windows-gnu/release/dijkstra_map_gd.dll target/x86_64-pc-windows-gnu/release/dijkstra_map_gd.windows.release.dll
+      - name: Rename and group library files
+        run: |
+          mkdir artifacts
+          mv target/x86_64-pc-windows-gnu/debug/dijkstra_map_gd.dll artifacts/dijkstra_map_gd.windows.debug.dll
+          mv target/x86_64-pc-windows-gnu/release/dijkstra_map_gd.dll artifacts/dijkstra_map_gd.windows.release.dll
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dijkstra_map_gd.windows.debug.dll
+          path: artifacts/dijkstra_map_gd.windows.debug.dll
       - uses: actions/upload-artifact@v4
         with:
           name: dijkstra_map_gd.windows.release.dll
-          path: target/x86_64-pc-windows-gnu/release/dijkstra_map_gd.windows.release.dll
+          path: artifacts/dijkstra_map_gd.windows.release.dll
 
+  # Build both debug and release versions for MacOS
   build-macos:
     runs-on: macos-latest
 
@@ -89,13 +116,24 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: build
+          args: -p dijkstra_map_gd
+      - uses: actions-rs/cargo@v1
+        with:
+          command: build
           args: --release -p dijkstra_map_gd
-      - name: Rename library file
-        run: mv target/release/libdijkstra_map_gd.dylib target/release/dijkstra_map_gd.mac.release.dylib
+      - name: Rename and group library files
+        run: |
+          mkdir artifacts
+          mv target/debug/libdijkstra_map_gd.dylib artifacts/dijkstra_map_gd.mac.debug.dylib
+          mv target/release/libdijkstra_map_gd.dylib artifacts/dijkstra_map_gd.mac.release.dylib
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dijkstra_map_gd.mac.debug.dylib
+          path: artifacts/dijkstra_map_gd.mac.debug.dylib
       - uses: actions/upload-artifact@v4
         with:
           name: dijkstra_map_gd.mac.release.dylib
-          path: target/release/dijkstra_map_gd.mac.release.dylib
+          path: artifacts/dijkstra_map_gd.mac.release.dylib
 
   commit:
     runs-on: ubuntu-latest
@@ -104,18 +142,33 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - name: Download dijkstra_map_gd.linux.debug.so
+        uses: actions/download-artifact@v4
+        with:
+          name: dijkstra_map_gd.linux.debug.so
+          path: addons/dijkstra-map/dijkstra_map_library/bin/
       - name: Download dijkstra_map_gd.linux.release.so
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: dijkstra_map_gd.linux.release.so
           path: addons/dijkstra-map/dijkstra_map_library/bin/
+      - name: Download dijkstra_map_gd.windows.debug.dll
+        uses: actions/download-artifact@v4
+        with:
+          name: dijkstra_map_gd.windows.debug.dll
+          path: addons/dijkstra-map/dijkstra_map_library/bin/
       - name: Download dijkstra_map_gd.windows.release.dll
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: dijkstra_map_gd.windows.release.dll
           path: addons/dijkstra-map/dijkstra_map_library/bin/
+      - name: Download dijkstra_map_gd.mac.debug.dylib
+        uses: actions/download-artifact@v4
+        with:
+          name: dijkstra_map_gd.mac.debug.dylib
+          path: addons/dijkstra-map/dijkstra_map_library/bin/
       - name: Download dijkstra_map_gd.mac.release.dylib
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: dijkstra_map_gd.mac.release.dylib
           path: addons/dijkstra-map/dijkstra_map_library/bin/
