@@ -183,11 +183,15 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: build
-          args: -Zbuild-std --verbose -p dijkstra_map_gd -C link-args=-pthread -C target-feature=+atomics -C link-args=-sSIDE_MODULE=2 -Zlink-native-libraries=no -Cllvm-args=-enable-emscripten-cxx-exceptions=0
+          args: -Zbuild-std --verbose -p dijkstra_map_gd
+        env:
+          RUSTFLAGS: "-C link-args=-pthread -C target-feature=+atomics -C link-args=-sSIDE_MODULE=2 -Zlink-native-libraries=no -Cllvm-args=-enable-emscripten-cxx-exceptions=0"
       - uses: actions-rs/cargo@v1
         with:
           command: build
-          args: -Zbuild-std --release --verbose -p dijkstra_map_gd -C link-args=-pthread -C target-feature=+atomics -C link-args=-sSIDE_MODULE=2 -Zlink-native-libraries=no -Cllvm-args=-enable-emscripten-cxx-exceptions=0
+          args: -Zbuild-std --release --verbose -p dijkstra_map_gd
+        env:
+          RUSTFLAGS: "-C link-args=-pthread -C target-feature=+atomics -C link-args=-sSIDE_MODULE=2 -Zlink-native-libraries=no -Cllvm-args=-enable-emscripten-cxx-exceptions=0"
       - name: Rename and group library files
         run: |
           mkdir artifacts
