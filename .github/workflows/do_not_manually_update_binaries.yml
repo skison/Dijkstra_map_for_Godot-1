@@ -17,12 +17,10 @@ jobs:
       - shell: bash
         id: check_binary_files_changed
         env:
-          LINUX_BINARY: addons/dijkstra-map/dijkstra_map_library/bin/linux/libdijkstra_map_gd.so
-          WINDOWS_BINARY: addons/dijkstra-map/dijkstra_map_library/bin/windows/dijkstra_map_gd.dll
-          MACOS_BINARY: addons/dijkstra-map/dijkstra_map_library/bin/macos/libdijkstra_map_gd.dylib
+          BINARY_DIRECTORY_PATH: addons/dijkstra-map/dijkstra_map_library/bin/
         run: |
           DIFF_LIST=$(git diff --name-only HEAD^ HEAD)
-          if [[ $DIFF_LIST == *$LINUX_BINARY* ]] || [[ $DIFF_LIST == *$WINDOWS_BINARY* ]] || [[ $DIFF_LIST == *$MACOS_BINARY* ]] ; then
+          if grep -q "^$BINARY_DIRECTORY_PATH" <<< "$DIFF_LIST"; then
               FILE_CHANGED=True
               exit 1
           else

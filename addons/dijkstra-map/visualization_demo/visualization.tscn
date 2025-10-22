@@ -64,7 +64,6 @@ sources/1 = SubResource("TileSetAtlasSource_o1ss5")
 
 [node name="VisualizationDemo" type="Node"]
 script = ExtResource("1_3868w")
-use_c_sharp = false
 
 [node name="Gridmap" type="Node2D" parent="."]
 unique_name_in_owner = true
