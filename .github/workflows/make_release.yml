@@ -179,6 +179,7 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: nightly
+          override: true
       - uses: Swatinem/rust-cache@v2
       - uses: actions-rs/cargo@v1
         with:
