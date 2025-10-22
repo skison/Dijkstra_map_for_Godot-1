@@ -176,6 +176,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - name: Prepare emsdk
+        run: |
+          git clone https://github.com/emscripten-core/emsdk.git
+          cd emsdk
+          ./emsdk install 3.1.74
+          ./emsdk activate 3.1.74
+          source ./emsdk_env.sh          
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: nightly
@@ -185,20 +192,20 @@ jobs:
       - uses: actions-rs/cargo@v1
         with:
           command: build
-          args: -Zbuild-std --verbose -p dijkstra_map_gd
+          args: -Zbuild-std --verbose -p dijkstra_map_gd --target wasm32-unknown-emscripten
         env:
           RUSTFLAGS: "-C link-args=-pthread -C target-feature=+atomics -C link-args=-sSIDE_MODULE=2 -Zlink-native-libraries=no -Cllvm-args=-enable-emscripten-cxx-exceptions=0"
       - uses: actions-rs/cargo@v1
         with:
           command: build
-          args: -Zbuild-std --release --verbose -p dijkstra_map_gd
+          args: -Zbuild-std --release --verbose -p dijkstra_map_gd --target wasm32-unknown-emscripten
         env:
           RUSTFLAGS: "-C link-args=-pthread -C target-feature=+atomics -C link-args=-sSIDE_MODULE=2 -Zlink-native-libraries=no -Cllvm-args=-enable-emscripten-cxx-exceptions=0"
       - name: Rename and group library files
         run: |
           mkdir artifacts
-          mv target/debug/libdijkstra_map_gd.wasm artifacts/dijkstra_map_gd.web_threads.debug.so
-          mv target/release/libdijkstra_map_gd.wasm artifacts/dijkstra_map_gd.web_threads.release.so
+          mv target/wasm32-unknown-emscripten/debug/libdijkstra_map_gd.wasm artifacts/dijkstra_map_gd.web_threads.debug.so
+          mv target/wasm32-unknown-emscripten/release/libdijkstra_map_gd.wasm artifacts/dijkstra_map_gd.web_threads.release.so
       - uses: actions/upload-artifact@v4
         with:
           name: dijkstra_map_gd.web_threads.debug.so
