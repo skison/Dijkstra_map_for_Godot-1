@@ -61,7 +61,7 @@ impl RemoteMap {
     }
 
     /// Used to perform read only operation on the map.
-    pub fn as_map(&self) -> Ref<DijkstraMap> {
+    pub fn as_map(&self) -> Ref<'_, DijkstraMap> {
         self.origin_map.borrow()
     }
 

@@ -57,9 +57,8 @@ func setup() -> void:
 	if not InputMap.has_action("left_mouse_button"):
 		InputMap.add_action("left_mouse_button")
 	InputMap.action_add_event("left_mouse_button", event)
-
-	# TODO: remove optional params once Rust API allows it
-	pos_to_id.assign(dijkstramap.add_square_grid(TILEMAP_RECT, -1, 1.0, INF))
+	
+	pos_to_id.assign(dijkstramap.add_square_grid(TILEMAP_RECT))
 	for pos in pos_to_id:
 		id_to_pos[pos_to_id[pos]] = pos
 	update_terrain_ids()

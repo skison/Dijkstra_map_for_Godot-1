@@ -28,23 +28,23 @@ macro_rules! enum_operation {
                     use super::*;
                     pub type OK =  ifdef! {[$($okty)?] {$($okty)?} else {()}};
                     pub type ERR = ifdef! {[$($error)?] {$($error)?} else {()}};
-                
-                ifdef! {[$($error)?] 
-                    {pub fn err() -> $($error)? {$(return $error ;)?}} else 
+
+                ifdef! {[$($error)?]
+                    {pub fn err() -> $($error)? {$(return $error ;)?}} else
                     {pub fn err() -> () {return ()}}}
                 })*
 
                 impl DijkstraMap {
                     $($(#[doc = $doc])*
-                    pub fn $fn_name(&mut self, $($field: impl Into<$field_type>,)*) 
+                    pub fn $fn_name(&mut self, $($field: impl Into<$field_type>,)*)
                     -> Result<$fn_name::OK,$fn_name::ERR>
                     {
                         let res = self.apply_operation(&Operation::$variant_name { $($field : $field.into()),* });
-                        ifdef! {[$($okty)?] 
-                            {if let Ok(_x) = res {return _x.ok_or(());};} else 
+                        ifdef! {[$($okty)?]
+                            {if let Ok(_x) = res {return _x.ok_or(());};} else
                             {if let Ok(_) = res {return Ok(());};}}
-                        ifdef! {[ $($error)? ] 
-                            {if let Err(_x) = res {return Err($fn_name::err());};} else 
+                        ifdef! {[ $($error)? ]
+                            {if let Err(_x) = res {return Err($fn_name::err());};} else
                             {if let Err(_) = res {return Err(());};}}
                         unreachable!();
                     })*
@@ -180,8 +180,14 @@ impl Operation {
     /// May panic if you try to set terrain to a non existing point or undo a RemovePoint
     pub fn undo(&self, map: &DijkstraMap) -> Self {
         match self {
-            Operation::AddPoint { id, terrain_type: _ } => Self::RemovePoint { id: *id },
-            Operation::AddPointReplace { id, terrain_type : _ } => {
+            Operation::AddPoint {
+                id,
+                terrain_type: _,
+            } => Self::RemovePoint { id: *id },
+            Operation::AddPointReplace {
+                id,
+                terrain_type: _,
+            } => {
                 if map.has_point(*id) {
                     let terrain_type = map.get_terrain_for_point(*id).unwrap();
                     Self::AddPointReplace {
@@ -192,7 +198,7 @@ impl Operation {
                     Self::RemovePoint { id: *id }
                 }
             }
-            Operation::RemovePoint { id : _ } => {
+            Operation::RemovePoint { id: _ } => {
                 panic!("cannot undo remove points without storing the connections before hand")
             }
             Operation::ConnectPoints {
@@ -243,8 +249,8 @@ impl DijkstraMap {
                 //                let weight = weight.unwrap_or(Weight(1.0));
                 if matches!(*directional, Directional::Bidirectional) {
                     match self
-                        .connect_points(*source, *target, Some(*weight), false)
-                        .and(self.connect_points(*target, *source, Some(*weight), Some(false)))
+                        .connect_points(*source, *target, *weight, false)
+                        .and(self.connect_points(*target, *source, *weight, Some(false)))
                     {
                         Ok(_) => Ok(None),
                         Err(_) => Err(Errors::PointNotFound(PointNotFound)),
@@ -359,8 +365,6 @@ impl DijkstraMap {
         }
     }
 }
-
-
 
 impl From<bool> for Directional {
     fn from(val: bool) -> Self {

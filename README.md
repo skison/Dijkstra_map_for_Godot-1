@@ -18,12 +18,14 @@ Note that the [API](./addons/dijkstra-map/doc/index.md) is now stable! Some feat
 
 ## Installing
 
-Note: when installing pre-compiled libraries, we support
+Note: when installing pre-compiled libraries, we officially support the latest releases of each major platform. At the time of writing, that is:
 
-- On linux: Ubuntu 20.04 or higher
-- On macos: ~~The latest macOS version (11 at the time of writing)~~ currently unsupported, but binaries can be built for macOS systems; see [Building from GitHub](#method-2-from-github).
-- On windows: Windows 10 or higher (presumably)
+- On Linux: Ubuntu 24.04
+- On macOS: macOS 15
+- On Windows: Windows 11
 - On the web: All modern browsers that support [Godot Web Exports](https://docs.godotengine.org/en/latest/tutorials/export/exporting_for_web.html)
+
+Other OS versions may well be compatible, but are not verified.
 
 ### Method 1: From the Asset Store (Recommended)
 
@@ -43,7 +45,7 @@ This will work for linux x64, macos x86 and windows x64 for godot 3.5.1 (for ano
 
 ### Method 2: from Github
 
-**Note**: on linux x64, ~~macos x86,~~ windows x64, and WebAssembly, you may skip steps 2-5 and use the pre-compiled libraries in `addons/dijkstra-map/dijkstra_map_library/bin/`. They may be slightly outdated though.
+**Note**: on Linux x64, macOS x86, Windows x64, and WebAssembly, you may skip steps 2-5 and use the pre-compiled libraries in [addons/dijkstra-map/dijkstra_map_library/bin/](addons/dijkstra-map/dijkstra_map_library/bin/). They may be slightly outdated though.
 
 1. Clone this repository.
 2. Follow the gdext (Rust bindings for Godot 4) setup steps [here](https://godot-rust.github.io/book/intro/setup.html#rust).

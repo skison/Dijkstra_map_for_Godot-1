@@ -12,7 +12,8 @@ config_version=5
 
 config/name="dijkstra map for godot"
 run/main_scene="res://addons/dijkstra-map/visualization_demo/visualization.tscn"
-config/features=PackedStringArray("4.5", "C#")
+config/features=PackedStringArray("4.6", "C#")
+config/icon="uid://cuk23l73cagcw"
 
 [display]
 

@@ -82,7 +82,7 @@ impl DijkstraMap {
     /// given `point` (note that `point` isn't included).
     ///
     /// If `point` is a target or is inaccessible, the iterator will be empty.
-    pub fn get_shortest_path_from_point(&self, point: PointId) -> ShortestPathIterator {
+    pub fn get_shortest_path_from_point(&self, point: PointId) -> ShortestPathIterator<'_> {
         ShortestPathIterator {
             dijkstra_map: self,
             next_point: self.get_direction_at_point(point),

@@ -6,8 +6,15 @@ const GRIDMAP_C_SHARP_SCRIPT = "res://addons/dijkstra-map/visualization_demo/gri
 ## Get a reference to the gridmap object which will use either a GDScript or C# script at runtime.
 @onready var gridmap: Node2D = %Gridmap
 
+@onready var terrain_selection_item_list: ItemList = %TerrainSelectionItemList
+@onready var visualization_selection_item_list: ItemList = %VisualizationSelectionItemList
+
+
 ## On ready, setup only the required gridmap script.
 func _ready():
+	terrain_selection_item_list.select(0)
+	visualization_selection_item_list.select(0)
+	
 	if use_c_sharp:
 		gridmap.set_script(load(GRIDMAP_C_SHARP_SCRIPT))
 		gridmap.Setup()

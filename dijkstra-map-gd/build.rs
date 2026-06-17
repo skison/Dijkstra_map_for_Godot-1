@@ -1,5 +1,6 @@
-use gdnative_doc::{backend::BuiltinBackend, init_logger, Builder, ConfigFile};
-use std::path::PathBuf;
+// TODO: Update doc/test building steps and integrate in here.
+//use gdnative_doc::{backend::BuiltinBackend, init_logger, Builder, ConfigFile};
+//use std::path::PathBuf;
 
 fn main() -> Result<(), String> {
     Ok(())

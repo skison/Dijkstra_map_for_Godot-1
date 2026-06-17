@@ -1,7 +1,6 @@
 extends GutTest
 ## General-purpose unit tests for DijkstraMap; note that further unit tests are generated to a
 ## different file by the Rust code.
-# TODO: Remove optional params once Rust API allows it
 
 var map: DijkstraMap
 var res: int

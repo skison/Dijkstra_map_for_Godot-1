@@ -13,8 +13,8 @@ dijkstra_map = { path = "../dijkstra-map" }
 
 [dependencies.godot]
 git = "https://github.com/godot-rust/gdext"
-tag = "v0.4.0"
-features = ["experimental-wasm", "lazy-function-tables"]
+tag = "v0.5.3"
+features = ["api-custom", "experimental-wasm", "lazy-function-tables"]
 
 [features]
 nothreads = ["godot/experimental-wasm-nothreads"]
