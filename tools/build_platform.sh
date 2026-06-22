@@ -9,21 +9,56 @@
 # https://godot-rust.github.io/book/toolchain/export-web.html?highlight=web#export-to-web
 # It is necessary to install emscripten and enable the emsdk env for web builds to work.
 # Tested with emscripten 3.1.74.
+# You likely will need to pass in the third 'host' param for web builds to work, especially on
+# Windows; this allows us to specify a more reliable host platform-specific nightly toolchain.
+# Example web build usage: ./build_platform.sh web_threads debug windows
+# If this fails initially, try directly installing the specific component for your host platform,
+# e.g. `rustup component add rust-src --toolchain nightly-2026-05-15-x86_64-pc-windows-msvc` for
+# the nightly toolchain that is best compatible for Windows systems for web builds (following the
+# same platform structure seen down below). Then re-run the build command and see if it works.
 
 # This build script is intended for local testing builds only. For releases, use the make_release
 # GitHub Action.
 
-if [ $# -ne 2 ]; then
+if [ $# -lt 2 ] || [ $# -gt 3 ]; then
     echo "Usage: $0 <platform> <profile>"
-    echo "  platform: windows | linux | mac | mac_arm | web_threads | web_nothreads"
-    echo "  profile:  debug | release"
+    echo "  platform:        windows | linux | mac | mac_arm | web_threads | web_nothreads"
+    echo "  profile:         debug | release"
+    echo "  host(optional):  windows | linux | mac"
     exit 1
 fi
 
 CHOSEN_PLATFORM=$1
 CHOSEN_PROFILE=$2
+CHOSEN_HOST=${3:-}
 
-# Verify platform choice
+# Pinned version of the Rust nightly toolchain that is known to support features that the WASM
+# builds rely on. In a future gdext release we may be able to unset this.
+# See: https://github.com/godot-rust/gdext/issues/438#issuecomment-4654794355
+WEB_COMPATIBLE_NIGHTLY_TOOLCHAIN="+nightly-2026-05-15"
+
+# Verify host platform if provided + set host-specific params.
+case $CHOSEN_HOST in
+    windows)
+        HOST_CUSTOM_TOOLCHAIN_SUFFIX="-x86_64-pc-windows-msvc"
+        ;;
+    linux)
+        HOST_CUSTOM_TOOLCHAIN_SUFFIX="-x86_64-unknown-linux-gnu"
+        ;;
+    max)
+        HOST_CUSTOM_TOOLCHAIN_SUFFIX="-x86_64-apple-darwin"
+        ;;
+    "")
+        HOST_CUSTOM_TOOLCHAIN_SUFFIX=""
+        ;;
+     *)
+        echo "Invalid host: $CHOSEN_HOST"
+        echo "Supported hosts: windows, linux, mac, or none (empty string)"
+        exit 1
+        ;;
+esac
+
+# Verify target platform choice + set platform-specific params.
 case $CHOSEN_PLATFORM in
     windows)
         PLATFORM="x86_64-pc-windows-msvc"
@@ -63,16 +98,21 @@ case $CHOSEN_PLATFORM in
             echo "Error: emcc is not detected. Make sure to source the emsdk env before building."
             exit 1
         fi
+        if [ -z $CHOSEN_HOST ]; then
+            echo "Warning: host platform arg may need to be specified; otherwise the build may fail."
+        fi
         PLATFORM="wasm32-unknown-emscripten"
         PLATFORM_EXTENSION="wasm"
         PLATFORM_TARGET_PREFIX=""
-        PLATFORM_CUSTOM_TOOLCHAIN="+nightly"
+        PLATFORM_CUSTOM_TOOLCHAIN=${WEB_COMPATIBLE_NIGHTLY_TOOLCHAIN}${HOST_CUSTOM_TOOLCHAIN_SUFFIX}
         PLATFORM_CARGO_FLAGS="-Zbuild-std"
         PLATFORM_RUSTFLAGS="-C link-args=-pthread \
             -C target-feature=+atomics \
             -C link-args=-sSIDE_MODULE=2 \
-            -Zlink-native-libraries=no \
-            -Cllvm-args=-enable-emscripten-cxx-exceptions=0"
+            -C llvm-args=-enable-emscripten-cxx-exceptions=0 \
+            -Z default-visibility=hidden \
+            -Z link-native-libraries=no \
+            -Z emscripten-wasm-eh=false"
         ;;
     web_nothreads)
         if ! command -v emcc &> /dev/null
@@ -80,14 +120,19 @@ case $CHOSEN_PLATFORM in
             echo "Error: emcc is not detected. Make sure to source the emsdk env before building."
             exit 1
         fi
+        if [ -z $CHOSEN_HOST ]; then
+            echo "Warning: host platform arg may need to be specified; otherwise the build may fail."
+        fi
         PLATFORM="wasm32-unknown-emscripten"
         PLATFORM_EXTENSION="wasm"
         PLATFORM_TARGET_PREFIX=""
-        PLATFORM_CUSTOM_TOOLCHAIN="+nightly"
+        PLATFORM_CUSTOM_TOOLCHAIN=${WEB_COMPATIBLE_NIGHTLY_TOOLCHAIN}${HOST_CUSTOM_TOOLCHAIN_SUFFIX}
         PLATFORM_CARGO_FLAGS="--features nothreads -Zbuild-std"
         PLATFORM_RUSTFLAGS="-C link-args=-sSIDE_MODULE=2 \
-            -Zlink-native-libraries=no \
-            -Cllvm-args=-enable-emscripten-cxx-exceptions=0"
+            -C llvm-args=-enable-emscripten-cxx-exceptions=0 \
+            -Z default-visibility=hidden \
+            -Z link-native-libraries=no \
+            -Z emscripten-wasm-eh=false"
         ;;
     *)
         echo "Invalid platform: $CHOSEN_PLATFORM"

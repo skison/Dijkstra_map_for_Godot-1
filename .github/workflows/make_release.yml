@@ -24,19 +24,16 @@ jobs:
       fail-fast: true
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: stable
+          targets: x86_64-unknown-linux-gnu
       - uses: Swatinem/rust-cache@v2
-      - uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --verbose -p dijkstra_map_gd
-      - uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --release --verbose -p dijkstra_map_gd
+      - name: Build Linux debug
+        run: cargo build -p dijkstra_map_gd
+      - name: Build Linux release
+        run: cargo build --release -p dijkstra_map_gd
       - name: Rename and group library files
         run: |
           mkdir artifacts
@@ -46,11 +43,11 @@ jobs:
         run: |
           strip artifacts/dijkstra_map_gd.linux.debug.so
           strip artifacts/dijkstra_map_gd.linux.release.so
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: dijkstra_map_gd.linux.debug.so
           path: artifacts/dijkstra_map_gd.linux.debug.so
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: dijkstra_map_gd.linux.release.so
           path: artifacts/dijkstra_map_gd.linux.release.so
@@ -63,35 +60,31 @@ jobs:
       fail-fast: true
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: stable
-          target: x86_64-pc-windows-msvc
+          targets: x86_64-pc-windows-msvc
       - uses: Swatinem/rust-cache@v2
-      - uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --verbose -p dijkstra_map_gd --target x86_64-pc-windows-msvc
-      - uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --release --verbose -p dijkstra_map_gd --target x86_64-pc-windows-msvc
+      - name: Build Windows debug
+        run: cargo build -p dijkstra_map_gd --target x86_64-pc-windows-msvc
+      - name: Build Windows release
+        run: cargo build --release -p dijkstra_map_gd --target x86_64-pc-windows-msvc
       - name: Rename and group library files
         run: |
           mkdir artifacts
           move target/x86_64-pc-windows-msvc/debug/dijkstra_map_gd.dll artifacts/dijkstra_map_gd.windows.debug.dll
           move target/x86_64-pc-windows-msvc/release/dijkstra_map_gd.dll artifacts/dijkstra_map_gd.windows.release.dll
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: dijkstra_map_gd.windows.debug.dll
           path: artifacts/dijkstra_map_gd.windows.debug.dll
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: dijkstra_map_gd.windows.release.dll
           path: artifacts/dijkstra_map_gd.windows.release.dll
 
-  # Build both debug and release versions for MacOS
+  # Build both debug and release versions for macOS
   build-macos:
     runs-on: macos-latest
 
@@ -99,37 +92,31 @@ jobs:
       fail-fast: true
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: stable
-          target: x86_64-apple-darwin
-          default: true
-          override: true
+          targets: x86_64-apple-darwin
       - uses: Swatinem/rust-cache@v2
-      - uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: -p dijkstra_map_gd
-      - uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --release -p dijkstra_map_gd
+      - name: Build macOS debug
+        run: cargo build -p dijkstra_map_gd
+      - name: Build macOS release
+        run: cargo build --release -p dijkstra_map_gd
       - name: Rename and group library files
         run: |
           mkdir artifacts
           mv target/debug/libdijkstra_map_gd.dylib artifacts/dijkstra_map_gd.mac.debug.dylib
           mv target/release/libdijkstra_map_gd.dylib artifacts/dijkstra_map_gd.mac.release.dylib
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: dijkstra_map_gd.mac.debug.dylib
           path: artifacts/dijkstra_map_gd.mac.debug.dylib
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: dijkstra_map_gd.mac.release.dylib
           path: artifacts/dijkstra_map_gd.mac.release.dylib
 
-  # Build both debug and release versions for MacOS ARM
+  # Build both debug and release versions for macOS ARM
   build-macos-arm:
     runs-on: macos-latest
 
@@ -137,209 +124,187 @@ jobs:
       fail-fast: true
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions-rs/toolchain@v1
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: stable
-          target: aarch64-apple-darwin
-          default: true
-          override: true
+          targets: aarch64-apple-darwin
       - uses: Swatinem/rust-cache@v2
-      - uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: -p dijkstra_map_gd
-      - uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --release -p dijkstra_map_gd
+      - name: Build macOS ARM debug
+        run: cargo build -p dijkstra_map_gd
+      - name: Build macOS ARM release
+        run: cargo build --release -p dijkstra_map_gd
       - name: Rename and group library files
         run: |
           mkdir artifacts
           mv target/debug/libdijkstra_map_gd.dylib artifacts/dijkstra_map_gd.mac_arm.debug.dylib
           mv target/release/libdijkstra_map_gd.dylib artifacts/dijkstra_map_gd.mac_arm.release.dylib
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: dijkstra_map_gd.mac_arm.debug.dylib
           path: artifacts/dijkstra_map_gd.mac_arm.debug.dylib
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: dijkstra_map_gd.mac_arm.release.dylib
           path: artifacts/dijkstra_map_gd.mac_arm.release.dylib
 
-  # # Build both debug and release versions for the web w/threads
-  # build-web-threads:
-  #   runs-on: ubuntu-latest
+  # Build both debug and release versions for the web w/threads
+  build-web-threads:
+    runs-on: ubuntu-latest
 
-  #   strategy:
-  #     fail-fast: true
+    strategy:
+      fail-fast: true
 
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - name: Prepare emsdk
-  #       run: |
-  #         git clone https://github.com/emscripten-core/emsdk.git
-  #         cd emsdk
-  #         ./emsdk install 3.1.74
-  #         ./emsdk activate 3.1.74
-  #         source ./emsdk_env.sh          
-  #     - uses: actions-rs/toolchain@v1
-  #       with:
-  #         toolchain: nightly
-  #         override: true
-  #         components: rust-src
-  #     - uses: Swatinem/rust-cache@v2
-  #     - uses: actions-rs/cargo@v1
-  #       with:
-  #         command: build
-  #         args: -Zbuild-std --verbose -p dijkstra_map_gd --target wasm32-unknown-emscripten
-  #       env:
-  #         RUSTFLAGS: "-C link-args=-pthread -C target-feature=+atomics -C link-args=-sSIDE_MODULE=2 -Zlink-native-libraries=no -Cllvm-args=-enable-emscripten-cxx-exceptions=0"
-  #     - uses: actions-rs/cargo@v1
-  #       with:
-  #         command: build
-  #         args: -Zbuild-std --release --verbose -p dijkstra_map_gd --target wasm32-unknown-emscripten
-  #       env:
-  #         RUSTFLAGS: "-C link-args=-pthread -C target-feature=+atomics -C link-args=-sSIDE_MODULE=2 -Zlink-native-libraries=no -Cllvm-args=-enable-emscripten-cxx-exceptions=0"
-  #     - name: Rename and group library files
-  #       run: |
-  #         mkdir artifacts
-  #         mv target/wasm32-unknown-emscripten/debug/libdijkstra_map_gd.wasm artifacts/dijkstra_map_gd.web_threads.debug.so
-  #         mv target/wasm32-unknown-emscripten/release/libdijkstra_map_gd.wasm artifacts/dijkstra_map_gd.web_threads.release.so
-  #     - uses: actions/upload-artifact@v4
-  #       with:
-  #         name: dijkstra_map_gd.web_threads.debug.so
-  #         path: artifacts/dijkstra_map_gd.web_threads.debug.so
-  #     - uses: actions/upload-artifact@v4
-  #       with:
-  #         name: dijkstra_map_gd.web_threads.release.so
-  #         path: artifacts/dijkstra_map_gd.web_threads.release.so
+    steps:
+      - uses: actions/checkout@v7
+      - uses: emscripten-core/setup-emsdk@v15
+        with:
+          version: 3.1.74
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: nightly-2026-05-15
+          targets: wasm32-unknown-emscripten
+          components: rust-src
+      - uses: Swatinem/rust-cache@v2
+      - name: Build web threaded debug
+        run: cargo build -Zbuild-std --verbose -p dijkstra_map_gd --target wasm32-unknown-emscripten
+        env:
+          RUSTFLAGS: "-C link-args=-pthread -C target-feature=+atomics -C link-args=-sSIDE_MODULE=2 -C llvm-args=-enable-emscripten-cxx-exceptions=0 -Z default-visibility=hidden -Z link-native-libraries=no -Z emscripten-wasm-eh=false"
+      - name: Build web threaded release
+        run: cargo build -Zbuild-std --release --verbose -p dijkstra_map_gd --target wasm32-unknown-emscripten
+        env:
+          RUSTFLAGS: "-C link-args=-pthread -C target-feature=+atomics -C link-args=-sSIDE_MODULE=2 -C llvm-args=-enable-emscripten-cxx-exceptions=0 -Z default-visibility=hidden -Z link-native-libraries=no -Z emscripten-wasm-eh=false"
+      - name: Rename and group library files
+        run: |
+          mkdir artifacts
+          mv target/wasm32-unknown-emscripten/debug/dijkstra_map_gd.wasm artifacts/dijkstra_map_gd.web_threads.debug.wasm
+          mv target/wasm32-unknown-emscripten/release/dijkstra_map_gd.wasm artifacts/dijkstra_map_gd.web_threads.release.wasm
+      - uses: actions/upload-artifact@v7
+        with:
+          name: dijkstra_map_gd.web_threads.debug.wasm
+          path: artifacts/dijkstra_map_gd.web_threads.debug.wasm
+      - uses: actions/upload-artifact@v7
+        with:
+          name: dijkstra_map_gd.web_threads.release.wasm
+          path: artifacts/dijkstra_map_gd.web_threads.release.wasm
   
-  # # Build both debug and release versions for the web w/o threads
-  # build-web-nothreads:
-  #   runs-on: ubuntu-latest
+  # Build both debug and release versions for the web w/o threads
+  build-web-nothreads:
+    runs-on: ubuntu-latest
 
-  #   strategy:
-  #     fail-fast: true
+    strategy:
+      fail-fast: true
 
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - name: Prepare emsdk
-  #       run: |
-  #         git clone https://github.com/emscripten-core/emsdk.git
-  #         cd emsdk
-  #         ./emsdk install 3.1.74
-  #         ./emsdk activate 3.1.74
-  #         source ./emsdk_env.sh          
-  #     - uses: actions-rs/toolchain@v1
-  #       with:
-  #         toolchain: nightly
-  #         override: true
-  #         components: rust-src
-  #     - uses: Swatinem/rust-cache@v2
-  #     - uses: actions-rs/cargo@v1
-  #       with:
-  #         command: build
-  #         args: --features nothreads -Zbuild-std --verbose -p dijkstra_map_gd --target wasm32-unknown-emscripten
-  #       env:
-  #         RUSTFLAGS: "-C link-args=-sSIDE_MODULE=2 -Zlink-native-libraries=no -Cllvm-args=-enable-emscripten-cxx-exceptions=0"
-  #     - uses: actions-rs/cargo@v1
-  #       with:
-  #         command: build
-  #         args: --features nothreads -Zbuild-std --release --verbose -p dijkstra_map_gd --target wasm32-unknown-emscripten
-  #       env:
-  #         RUSTFLAGS: "-C link-args=-sSIDE_MODULE=2 -Zlink-native-libraries=no -Cllvm-args=-enable-emscripten-cxx-exceptions=0"
-  #     - name: Rename and group library files
-  #       run: |
-  #         mkdir artifacts
-  #         mv target/wasm32-unknown-emscripten/debug/libdijkstra_map_gd.wasm artifacts/dijkstra_map_gd.web_threads.debug.so
-  #         mv target/wasm32-unknown-emscripten/release/libdijkstra_map_gd.wasm artifacts/dijkstra_map_gd.web_threads.release.so
-  #     - uses: actions/upload-artifact@v4
-  #       with:
-  #         name: dijkstra_map_gd.web_threads.debug.so
-  #         path: artifacts/dijkstra_map_gd.web_threads.debug.so
-  #     - uses: actions/upload-artifact@v4
-  #       with:
-  #         name: dijkstra_map_gd.web_threads.release.so
-  #         path: artifacts/dijkstra_map_gd.web_threads.release.so
+    steps:
+      - uses: actions/checkout@v7
+      - uses: emscripten-core/setup-emsdk@v15
+        with:
+          version: 3.1.74       
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: nightly-2026-05-15
+          targets: wasm32-unknown-emscripten
+          components: rust-src
+      - uses: Swatinem/rust-cache@v2
+      - name: Build web no threads debug
+        run: cargo build --features nothreads -Zbuild-std --verbose -p dijkstra_map_gd --target wasm32-unknown-emscripten
+        env:
+          RUSTFLAGS: "-C link-args=-sSIDE_MODULE=2 -C llvm-args=-enable-emscripten-cxx-exceptions=0 -Z default-visibility=hidden -Z link-native-libraries=no -Z emscripten-wasm-eh=false"
+      - name: Build web no threads debug
+        run: cargo build --features nothreads -Zbuild-std --release --verbose -p dijkstra_map_gd --target wasm32-unknown-emscripten
+        env:
+          RUSTFLAGS: "-C link-args=-sSIDE_MODULE=2 -C llvm-args=-enable-emscripten-cxx-exceptions=0 -Z default-visibility=hidden -Z link-native-libraries=no -Z emscripten-wasm-eh=false"
+      - name: Rename and group library files
+        run: |
+          mkdir artifacts
+          mv target/wasm32-unknown-emscripten/debug/dijkstra_map_gd.wasm artifacts/dijkstra_map_gd.web_nothreads.debug.wasm
+          mv target/wasm32-unknown-emscripten/release/dijkstra_map_gd.wasm artifacts/dijkstra_map_gd.web_nothreads.release.wasm
+      - uses: actions/upload-artifact@v7
+        with:
+          name: dijkstra_map_gd.web_nothreads.debug.wasm
+          path: artifacts/dijkstra_map_gd.web_nothreads.debug.wasm
+      - uses: actions/upload-artifact@v7
+        with:
+          name: dijkstra_map_gd.web_nothreads.release.wasm
+          path: artifacts/dijkstra_map_gd.web_nothreads.release.wasm
 
   commit:
     runs-on: ubuntu-latest
 
-    needs: [build-linux, build-windows, build-macos, build-macos-arm] # build-web-threads, build-web-nothreads
+    needs: [build-linux, build-windows, build-macos, build-macos-arm, build-web-threads, build-web-nothreads]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v7
 
       - name: Download dijkstra_map_gd.linux.debug.so
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: dijkstra_map_gd.linux.debug.so
           path: addons/dijkstra-map/dijkstra_map_library/bin/
       - name: Download dijkstra_map_gd.linux.release.so
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: dijkstra_map_gd.linux.release.so
           path: addons/dijkstra-map/dijkstra_map_library/bin/
 
       - name: Download dijkstra_map_gd.windows.debug.dll
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: dijkstra_map_gd.windows.debug.dll
           path: addons/dijkstra-map/dijkstra_map_library/bin/
       - name: Download dijkstra_map_gd.windows.release.dll
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: dijkstra_map_gd.windows.release.dll
           path: addons/dijkstra-map/dijkstra_map_library/bin/
 
       - name: Download dijkstra_map_gd.mac.debug.dylib
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: dijkstra_map_gd.mac.debug.dylib
           path: addons/dijkstra-map/dijkstra_map_library/bin/
       - name: Download dijkstra_map_gd.mac.release.dylib
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: dijkstra_map_gd.mac.release.dylib
           path: addons/dijkstra-map/dijkstra_map_library/bin/
 
       - name: Download dijkstra_map_gd.mac_arm.debug.dylib
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: dijkstra_map_gd.mac_arm.debug.dylib
           path: addons/dijkstra-map/dijkstra_map_library/bin/
       - name: Download dijkstra_map_gd.mac_arm.release.dylib
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: dijkstra_map_gd.mac_arm.release.dylib
           path: addons/dijkstra-map/dijkstra_map_library/bin/
 
-      # - name: Download dijkstra_map_gd.web_threads.debug.dll
-      #   uses: actions/download-artifact@v4
-      #   with:
-      #     name: dijkstra_map_gd.web_threads.debug.dll
-      #     path: addons/dijkstra-map/dijkstra_map_library/bin/
-      # - name: Download dijkstra_map_gd.web_threads.release.dll
-      #   uses: actions/download-artifact@v4
-      #   with:
-      #     name: dijkstra_map_gd.web_threads.release.dll
-      #     path: addons/dijkstra-map/dijkstra_map_library/bin/
+      - name: Download dijkstra_map_gd.web_threads.debug.wasm
+        uses: actions/download-artifact@v8
+        with:
+          name: dijkstra_map_gd.web_threads.debug.wasm
+          path: addons/dijkstra-map/dijkstra_map_library/bin/
+      - name: Download dijkstra_map_gd.web_threads.release.wasm
+        uses: actions/download-artifact@v8
+        with:
+          name: dijkstra_map_gd.web_threads.release.wasm
+          path: addons/dijkstra-map/dijkstra_map_library/bin/
 
-      # - name: Download dijkstra_map_gd.web_nothreads.debug.dll
-      #   uses: actions/download-artifact@v4
-      #   with:
-      #     name: dijkstra_map_gd.web_nothreads.debug.dll
-      #     path: addons/dijkstra-map/dijkstra_map_library/bin/
-      # - name: Download dijkstra_map_gd.web_nothreads.release.dll
-      #   uses: actions/download-artifact@v4
-      #   with:
-      #     name: dijkstra_map_gd.web_nothreads.release.dll
-      #     path: addons/dijkstra-map/dijkstra_map_library/bin/
+      - name: Download dijkstra_map_gd.web_nothreads.debug.wasm
+        uses: actions/download-artifact@v8
+        with:
+          name: dijkstra_map_gd.web_nothreads.debug.wasm
+          path: addons/dijkstra-map/dijkstra_map_library/bin/
+      - name: Download dijkstra_map_gd.web_nothreads.release.wasm
+        uses: actions/download-artifact@v8
+        with:
+          name: dijkstra_map_gd.web_nothreads.release.wasm
+          path: addons/dijkstra-map/dijkstra_map_library/bin/
 
-      - uses: stefanzweifel/git-auto-commit-action@v4
+      - uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: "Release ${{ github.event.inputs.version }}\n${{ github.event.inputs.body }}"
-      - uses: stefanzweifel/git-auto-commit-action@v4
+      - uses: stefanzweifel/git-auto-commit-action@v7
         with:
           tagging_message: "${{ github.event.inputs.version }}\n${{ github.event.inputs.body }}"
