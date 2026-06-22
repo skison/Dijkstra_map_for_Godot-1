@@ -24,25 +24,21 @@ impl DijkstraMap {
 
     /// Returns [`true`] if both `source` and `target` exist, and there's a
     /// connection from `source` to `target`.
-    pub fn has_connection(&self, source: impl Into<PointId>, target: impl Into<PointId>) -> bool {
-        match self.points.get(&source.into()) {
+    pub fn has_connection(&self, source: PointId, target: PointId) -> bool {
+        match self.points.get(&source) {
             None => false,
-            Some(PointInfo { connections, .. }) => connections.contains_key(&target.into()),
+            Some(PointInfo { connections, .. }) => connections.contains_key(&target),
         }
     }
 
-    pub fn get_connection(
-        &self,
-        source: impl Into<PointId>,
-        target: impl Into<PointId>,
-    ) -> Option<Weight> {
-        match self.points.get(&source.into()) {
+    pub fn get_connection(&self, source: PointId, target: PointId) -> Option<Weight> {
+        match self.points.get(&source) {
             None => None,
             Some(PointInfo {
                 connections,
                 reverse_connections: _,
                 terrain_type: _,
-            }) => connections.get(&target.into()).copied(),
+            }) => connections.get(&target).copied(),
         }
     }
 
@@ -54,26 +50,26 @@ impl DijkstraMap {
     }
 
     /// Returns [`true`] if `point` exists and is disabled.
-    pub fn is_point_disabled(&mut self, point: impl Into<PointId>) -> bool {
-        self.disabled_points.contains(&point.into())
+    pub fn is_point_disabled(&mut self, point: PointId) -> bool {
+        self.disabled_points.contains(&point)
     }
 
     /// Given a `point`, returns the id of the next point along the shortest
     /// path computed with [`recalculate`](DijkstraMap::recalculate).
     ///
     /// If there is no path, returns [`None`].
-    pub fn get_direction_at_point(&self, point: impl Into<PointId>) -> Option<PointId> {
+    pub fn get_direction_at_point(&self, point: PointId) -> Option<PointId> {
         self.computed_info
-            .get(&point.into())
+            .get(&point)
             .map(|PointComputedInfo { direction, .. }| *direction)
     }
 
     /// Returns the cost of the shortest path computed with [`recalculate`](DijkstraMap::recalculate).
     ///
     /// If there is no path, the cost is [`INFINITY`](Cost::infinity).
-    pub fn get_cost_at_point(&self, point: impl Into<PointId>) -> Cost {
+    pub fn get_cost_at_point(&self, point: PointId) -> Cost {
         self.computed_info
-            .get(&point.into())
+            .get(&point)
             .map(|PointComputedInfo { cost, .. }| *cost)
             .unwrap_or_else(Cost::infinity)
     }

@@ -205,9 +205,7 @@ impl DijkstraMap {
     /// ```
     #[func]
     pub fn add_point(&mut self, point_id: i32, #[opt(default = -1)] terrain_type: i32) -> i64 {
-        let res = self
-            .dijkstra
-            .add_point(point_id, dijkstra_map::TerrainType::Terrain(terrain_type));
+        let res = self.dijkstra.add_point(point_id, terrain_type);
         result_to_int(res)
     }
 
@@ -257,7 +255,7 @@ impl DijkstraMap {
     /// # `2` is not in the map, so this returns `-1`
     /// assert_eq(dijkstra_map.get_terrain_for_point(2), -1)
     /// ```
-    // #[func]
+    #[func]
     pub fn get_terrain_for_point(&mut self, point_id: i32) -> i32 {
         // TODO : TerrainType::DefaultTerrain also convert into -1, so this function cannot separate points that exists and have a default terrain, and those that do not exist.
         // We need a different convention here.
@@ -358,7 +356,7 @@ impl DijkstraMap {
     /// ```
     #[func]
     pub fn is_point_disabled(&mut self, point_id: i32) -> bool {
-        self.dijkstra.is_point_disabled(point_id)
+        self.dijkstra.is_point_disabled(point_id.into())
     }
 
     /// Connects the two given points.
@@ -461,7 +459,7 @@ impl DijkstraMap {
     /// ```
     #[func]
     pub fn has_connection(&mut self, source: i32, target: i32) -> bool {
-        self.dijkstra.has_connection(source, target)
+        self.dijkstra.has_connection(source.into(), target.into())
     }
 
     /// Given a point, returns the id of the next point along the
@@ -487,7 +485,7 @@ impl DijkstraMap {
     #[func]
     pub fn get_direction_at_point(&mut self, point_id: i32) -> i32 {
         self.dijkstra
-            .get_direction_at_point(point_id)
+            .get_direction_at_point(point_id.into())
             .unwrap_or(PointId(-1))
             .into()
     }
@@ -511,7 +509,7 @@ impl DijkstraMap {
     /// ```
     #[func]
     pub fn get_cost_at_point(&mut self, point_id: i32) -> f32 {
-        self.dijkstra.get_cost_at_point(point_id).into()
+        self.dijkstra.get_cost_at_point(point_id.into()).into()
     }
 
     /// Recalculates cost map and direction map information for each

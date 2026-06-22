@@ -2,6 +2,9 @@ extends GutTest
 ## General-purpose unit tests for DijkstraMap; note that further unit tests are generated to a
 ## different file by the Rust code.
 
+const TERRAIN_WEIGHTS_WARNING := (
+	"no terrain weights specified : all terrains will have infinite cost !")
+
 var map: DijkstraMap
 var res: int
 
@@ -25,6 +28,7 @@ func test_connect_points_recalculate() -> void:
 	assert_eq(res, OK, "connected 1 -> 2 succesfully")
 
 	res = map.recalculate(1, {"input_is_destination": false})
+	assert_engine_error(TERRAIN_WEIGHTS_WARNING)
 	assert_eq(res, OK)
 
 	cost_res = map.get_cost_at_point(2)
@@ -34,6 +38,7 @@ func test_connect_points_recalculate() -> void:
 
 	gut.p("reversed, unilateral : point as target from which you start")
 	map.recalculate(2, {"input_is_destination": true})
+	assert_engine_error(TERRAIN_WEIGHTS_WARNING)
 
 	cost_res = map.get_cost_at_point(1)
 	assert_eq(cost_res, 1.0, "2 is where you want to go\n1->2 costs 1.0")
@@ -45,6 +50,7 @@ func test_connect_points_recalculate() -> void:
 
 func test_recalculate_fails_if_nonsensical_key() -> void:
 	res = map.recalculate(0, {"some str": 4})
+	assert_engine_error("Invalid Key `some str` in parameter")
 	assert_eq(res, FAILED)
 
 
@@ -52,6 +58,7 @@ func test_connect_points_recalculate_default_args() -> void:
 	var cost_res: float
 	assert_eq(map.connect_points(2, 1, 1.0, false), OK)
 	var other_res: int = map.recalculate(1, {})
+	assert_engine_error(TERRAIN_WEIGHTS_WARNING)
 	assert_eq(other_res, OK, "recalculate successful")
 
 	cost_res = map.get_cost_at_point(1)
@@ -69,15 +76,18 @@ func test_disable_enables() -> void:
 
 	gut.p("recalculate")
 	map.recalculate(1, {"input_is_destination": false})
+	assert_engine_error(TERRAIN_WEIGHTS_WARNING)
 	gut.p("end_recalculate")
 
 	assert_eq(map.get_cost_at_point(3), 2.0, "point is enabled, you can go from 1 to 3 via 2")
 	map.disable_point(2)
 	map.recalculate(1, {"input_is_destination": false})
+	assert_engine_error(TERRAIN_WEIGHTS_WARNING)
 
 	assert_eq(map.get_cost_at_point(3), INF, "2 is disabled")
 	map.enable_point(2)
 	map.recalculate(1, {"input_is_destination": false})
+	assert_engine_error(TERRAIN_WEIGHTS_WARNING)
 
 	assert_eq(map.get_cost_at_point(3), 2.0, "back to ok")
 
@@ -96,6 +106,7 @@ func test_connect_point_unilateral() -> void:
 	assert_false(map.has_connection(2, 1), "reverse connection doesn't exist")
 
 	map.recalculate(1, {"input_is_destination": false})
+	assert_engine_error(TERRAIN_WEIGHTS_WARNING)
 	assert_eq(map.get_cost_at_point(2), 1.0, "1 to 2 should cost the default amount of 1.0")
 
 
@@ -103,6 +114,7 @@ func test_connect_point_bilateral() -> void:
 	pending()
 	map.connect_points(1, 2, 1.0, true)
 	map.recalculate(1, {"input_is_destination": true})
+	assert_engine_error(TERRAIN_WEIGHTS_WARNING)
 
 	assert_true(map.has_point(1))
 	assert_true(map.has_point(2))
@@ -127,5 +139,6 @@ func test_get_points_with_cost_between() -> void:
 	for k in 10:
 		map.connect_points(k, k + 1, 1.0, true)
 	map.recalculate(0, {})
+	assert_engine_error(TERRAIN_WEIGHTS_WARNING)
 	gut.p(map.get_all_points_with_cost_between(0.0, 5.0))
 	gut.p(map.get_cost_map())
