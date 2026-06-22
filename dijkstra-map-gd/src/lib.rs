@@ -112,14 +112,6 @@ impl IRefCounted for DijkstraMap {
     /// ```gdscript
     /// var dijkstra_map = DijkstraMap.new()
     /// ```
-
-    /// Clears the `DijkstraMap` of all points and connections.
-    ///
-    /// # Example
-    /// ```gdscript
-    /// var dijkstra_map = DijkstraMap.new()
-    /// dijkstra_map.clear()
-    /// ```
     fn init(_sprite: Base<RefCounted>) -> Self {
         Self {
             dijkstra: dijkstra_map::DijkstraMap::new(),
@@ -129,6 +121,13 @@ impl IRefCounted for DijkstraMap {
 
 #[godot_api]
 impl DijkstraMap {
+    /// Clears the `DijkstraMap` of all points and connections.
+    ///
+    /// # Example
+    /// ```gdscript
+    /// var dijkstra_map = DijkstraMap.new()
+    /// dijkstra_map.clear()
+    /// ```
     #[func]
     pub fn clear(&mut self) {
         self.dijkstra.clear()
@@ -522,7 +521,8 @@ impl DijkstraMap {
     ///
     /// - `origin` : ID of the origin point, or array of IDs (preferably
     /// [Int32Array]).
-    /// - `optional_params:` [Dictionary] : Specifies optional arguments. \
+    /// - `params:` [Dictionary] : Specifies optional arguments (an empty
+    /// dictionary can be passed to use defaults for every arg). \
     /// Valid arguments are :
     ///   - `"input_is_destination":` [bool] (default : [true]) : \
     ///     Wether or not the `origin` points are seen as destination.
@@ -551,7 +551,7 @@ impl DijkstraMap {
     /// # Errors
     ///
     /// [FAILED] is returned if :
-    /// - One of the keys in `optional_params` is invalid.
+    /// - One of the keys in `params` is invalid.
     /// - `origin` is neither an [int], a [PoolIntArray] or a [Array].
     ///
     /// # Example
@@ -562,12 +562,12 @@ impl DijkstraMap {
     /// dijkstra_map.add_point(2, 0)
     /// dijkstra_map.connect_points(0, 1)
     /// dijkstra_map.connect_points(1, 2, 10.0)
-    /// var optional_params = {
+    /// var params = {
     ///     "terrain_weights": { 0: 1.0, 1: 2.0 },
     ///     "input_is_destination": true,
     ///     "maximum_cost": 2.0,
     /// }
-    /// dijkstra_map.recalculate(0, optional_params)
+    /// dijkstra_map.recalculate(0, params)
     /// assert_eq(dijkstra_map.get_direction_at_point(0), 0)
     /// assert_eq(dijkstra_map.get_direction_at_point(1), 0)
     /// # 2 is too far from 0, so because we set "maximum_cost" to 2.0, it is inaccessible.
@@ -577,9 +577,10 @@ impl DijkstraMap {
     pub fn recalculate(
         &mut self,
         origin: Variant,
-        // TODO: make optional when possible (e.g. #[opt(mut_default = &VarDictionary::new())] )
-        // Not currently supported for mutable types in gdext.
-        optional_params: VarDictionary,
+        // TODO: make optional when possible; not supported for mutable types as of gdext v0.5.3.
+        // See: https://github.com/godot-rust/gdext/pull/1406
+        // Renamed (temporarily?) from `optional_params` to avoid confusion on the param req.
+        params: VarDictionary,
     ) -> i64 {
         const TERRAIN_WEIGHT: &str = "terrain_weights";
         const TERMINATION_POINTS: &str = "termination_points";
@@ -609,7 +610,7 @@ impl DijkstraMap {
         }
 
         // verify keys makes sense
-        for k in optional_params.keys_shared().into_iter() {
+        for k in params.keys_shared().into_iter() {
             let string: String = k.to_string();
             if !VALID_KEYS.contains(&string.as_str()) {
                 godot_error!("Invalid Key `{}` in parameter", string);
@@ -661,9 +662,9 @@ impl DijkstraMap {
         // ===================
         let read: Option<Read> = {
             // we need to check that the parameter exists first, because
-            // `optional_params.get` will create a `Nil` entry if it does not.
-            if optional_params.contains_key(INPUT_IS_DESTINATION) {
-                let value = optional_params.get(INPUT_IS_DESTINATION).unwrap();
+            // `params.get` will create a `Nil` entry if it does not.
+            if params.contains_key(INPUT_IS_DESTINATION) {
+                let value = params.get(INPUT_IS_DESTINATION).unwrap();
                 match value.try_to::<bool>() {
                     Ok(b) => Some(if b {
                         Read::InputIsDestination
@@ -686,8 +687,8 @@ impl DijkstraMap {
         };
 
         let max_cost: Option<Cost> = {
-            if optional_params.contains_key(MAXIMUM_COST) {
-                let value = optional_params.get(MAXIMUM_COST).unwrap();
+            if params.contains_key(MAXIMUM_COST) {
+                let value = params.get(MAXIMUM_COST).unwrap();
                 match value.try_to::<f64>() {
                     Ok(f) => Some(Cost(f as f32)),
                     Err(_) => {
@@ -706,9 +707,9 @@ impl DijkstraMap {
         };
 
         let initial_costs: Vec<Cost> = {
-            if optional_params.contains_key(INITIAL_COSTS) {
+            if params.contains_key(INITIAL_COSTS) {
                 let mut initial_costs = Vec::<Cost>::new();
-                let value = optional_params.get(INITIAL_COSTS).unwrap();
+                let value = params.get(INITIAL_COSTS).unwrap();
                 match value.get_type() {
                     godot::builtin::VariantType::PACKED_FLOAT32_ARRAY => {
                         for f in value
@@ -749,8 +750,8 @@ impl DijkstraMap {
         };
 
         let mut terrain_weights = FnvHashMap::<TerrainType, Weight>::default();
-        if optional_params.contains_key(TERRAIN_WEIGHT) {
-            let value = optional_params.get(TERRAIN_WEIGHT).unwrap();
+        if params.contains_key(TERRAIN_WEIGHT) {
+            let value = params.get(TERRAIN_WEIGHT).unwrap();
             if let Ok(dict) = value.try_to::<godot::builtin::AnyDictionary>() {
                 for key in dict.keys_shared() {
                     if let Ok(id) = key.try_to::<i64>() {
@@ -781,8 +782,8 @@ impl DijkstraMap {
             godot_warn!("no terrain weights specified : all terrains will have infinite cost !")
         }
 
-        let termination_points = if optional_params.contains_key(TERMINATION_POINTS) {
-            let value = optional_params.get(TERMINATION_POINTS).unwrap();
+        let termination_points = if params.contains_key(TERMINATION_POINTS) {
+            let value = params.get(TERMINATION_POINTS).unwrap();
             match value.get_type() {
                 godot::builtin::VariantType::INT => {
                     std::iter::once(PointId(value.to::<i64>() as i32)).collect()

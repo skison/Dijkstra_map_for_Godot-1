@@ -181,12 +181,12 @@ func test_recalculate():
 	dijkstra_map.add_point(2, 0)
 	dijkstra_map.connect_points(0, 1)
 	dijkstra_map.connect_points(1, 2, 10.0)
-	var optional_params = {
+	var params = {
 		"terrain_weights": { 0: 1.0, 1: 2.0 },
 		"input_is_destination": true,
 		"maximum_cost": 2.0,
 	}
-	dijkstra_map.recalculate(0, optional_params)
+	dijkstra_map.recalculate(0, params)
 	assert_eq(dijkstra_map.get_direction_at_point(0), 0)
 	assert_eq(dijkstra_map.get_direction_at_point(1), 0)
 	# 2 is too far from 0, so because we set "maximum_cost" to 2.0, it is inaccessible.
