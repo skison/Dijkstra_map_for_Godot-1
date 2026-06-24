@@ -18,13 +18,13 @@ func _ready() -> void:
 
 ## If a target position is defined, move toward it, then find a new target once it is reached.
 func _process(delta: float) -> void:
-	if target_position != ExampleSharedDijkstraTileMap.INVALID_POS:
+	if not is_nan(target_position.x):
 		var direction := position.direction_to(target_position)
 
 		# Apply speed modifier and move the character.
 		var speed_modifier := map.get_speed_modifier(position)
 		var collision: KinematicCollision2D = move_and_collide(
-			direction * speed * speed_modifier * delta
+			direction * speed * speed_modifier * delta,
 		)
 
 		# Push the target if it has a defined 'push' method, with direction and strength parameters.
@@ -36,7 +36,7 @@ func _process(delta: float) -> void:
 			target_position = ExampleSharedDijkstraTileMap.INVALID_POS
 
 	# Try to get a new target position if needed.
-	if target_position == ExampleSharedDijkstraTileMap.INVALID_POS:
+	if is_nan(target_position.x):
 		target_position = map.get_target_for_pikeman(position)
 
 
@@ -44,5 +44,5 @@ func _process(delta: float) -> void:
 func _on_dijkstra_maps_recalculated() -> void:
 	var new_target_pos := map.get_target_for_pikeman(position)
 	# Avoid setting to INVALID_POS so the unit doesn't get stranded in an invalid spot
-	if new_target_pos != ExampleSharedDijkstraTileMap.INVALID_POS:
+	if not is_nan(new_target_pos.x):
 		target_position = new_target_pos

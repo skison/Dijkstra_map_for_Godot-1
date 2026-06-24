@@ -77,7 +77,7 @@ There are 3 example scenes in the github repository:
 
 Each example scene's scripts contain heavily commented code.
 
-**Note**: The visualization example includes a C# alternate implementation that requires the .NET-enabled version of Godot to run. See [Godot C# Basics](https://docs.godotengine.org/en/stable/tutorials/scripting/c_sharp/c_sharp_basics.html) for information on how to set this up. `visualization.tscn` includes an option to toggle usage of the C# version of the script, which should be functionally identical to the GDScript version.
+**Note**: The visualization example includes a C# alternate implementation that requires the .NET-enabled version of Godot to run. See [Godot C# Basics](https://docs.godotengine.org/en/stable/tutorials/scripting/c_sharp/c_sharp_basics.html) for information on how to set this up. `visualization.tscn` includes an export option to toggle usage of the C# version of the script, which should be functionally identical to the GDScript version.
 
 You can also look at the unit tests in `tests/unit/*` for examples of using the DijkstraMap API.
 
@@ -188,16 +188,9 @@ Open an Issue before working on a feature, bugfix, or unit test, so we can then 
 
 Before opening a pull request, please check the following:
 * If you modified the Rust code, be sure you have built it with `cargo build --release` and it still works!
-* The unit tests should pass (`cargo test` and the GUT tests)
-* All the example scenes (visualization demo and project examples) should run correctly
-* Ensure you have run `cargo fmt` and `gdformat` (via [GDScript Toolkit](https://github.com/Scony/godot-gdscript-toolkit)) on your added/edited files
-
-To set up gdformat/GDScript Toolkit, it is recommended to use a Python virtual environment (venv)
-* `python3 -m venv .venv` or `python -m venv .venv` will create a .venv/ folder you can [activate](https://docs.python.org/3/tutorial/venv.html)
-* After activating the venv, verify that you are using Python 3: `python --version`
-* Install GDToolkit: `pip install gdtoolkit==4.*`
-* Run the linter on your GDScript file with `gdlint path/to/file.gd` to show you what needs to be formatted
-* Format your file with `gdformat path/to/file.gd` (careful, data loss is possible), double check linter afterward in case some code couldn't be auto-formatted
+* The unit tests should pass (`cargo test` and the GUT tests).
+* All the example scenes (visualization demo and project examples) should run correctly.
+* Ensure you have run `cargo fmt` and `gdscript-formatter` (via [GDQuest's GDScript formatter](https://github.com/GDQuest/GDScript-formatter)) on your added/edited files.
 
 
 ## TODO

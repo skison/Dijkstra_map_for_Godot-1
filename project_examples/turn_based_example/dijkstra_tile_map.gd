@@ -21,14 +21,14 @@ const TILE_ATLAS_COORDS: Dictionary[Tiles, Vector2i] = {
 	Tiles.WATER: Vector2i(1, 0),
 	Tiles.BUSHES: Vector2i(2, 0),
 	Tiles.ROAD: Vector2i(3, 0),
-	Tiles.HIGHLIGHT: Vector2i(0, 1)
+	Tiles.HIGHLIGHT: Vector2i(0, 1),
 }
 const TILE_SET_SOURCE_ID = 0 ## ID of the TileSetSource used in a TileSet to provide tile options.
 
 ## Store a base DijkstraMap object for pathfinding calculations.
 var dijkstra_map := DijkstraMap.new()
-var _position_to_id: Dictionary[Vector2i, int] = {} # Maps cell positions to DijkstraMap node ids
-var _id_to_position: Dictionary[int, Vector2i] = {} # Reverse mapping of node ids to cell positions
+var _position_to_id: Dictionary[Vector2i, int] = { } # Maps cell positions to DijkstraMap node ids
+var _id_to_position: Dictionary[int, Vector2i] = { } # Reverse mapping of node ids to cell positions
 
 @onready var main_tile_layer: TileMapLayer = %MainTileLayer
 @onready var highlight_tile_layer: TileMapLayer = %HighlightTileLayer
@@ -66,7 +66,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		var main_tile_type := get_tile_type_from_cell_position(pos)
 		# Check if clicked point is within the highlighted area
 		var is_in_highlight_area := (
-			highlight_tile_layer.get_cell_atlas_coords(pos) == TILE_ATLAS_COORDS[Tiles.HIGHLIGHT]
+				highlight_tile_layer.get_cell_atlas_coords(pos) == TILE_ATLAS_COORDS[Tiles.HIGHLIGHT]
 		)
 		cell_selected.emit(pos, main_tile_type, is_in_highlight_area)
 
@@ -81,7 +81,8 @@ func get_tileset_atlas_pos(tile_type: int) -> Vector2i:
 ## Returns -1 if the type isn't found.
 func get_tile_type_from_cell_position(cell_pos: Vector2i) -> int:
 	var tile_type: Variant = TILE_ATLAS_COORDS.find_key(
-		main_tile_layer.get_cell_atlas_coords(cell_pos))
+		main_tile_layer.get_cell_atlas_coords(cell_pos),
+	)
 	# Explicit null check to include 0 case
 	return tile_type if tile_type != null else -1
 
@@ -96,13 +97,16 @@ func get_tile_type_from_world_position(world_pos: Vector2) -> int:
 ## and a mapping of terrain weights. Note that this will override the previous DijsktraMap costs!
 ## Optionally highlight the moveable area afterward.
 func calculate_moveable_area(
-	world_pos: Vector2, max_cost: float, terrain_weights: Dictionary, highlight_area := false
+		world_pos: Vector2,
+		max_cost: float,
+		terrain_weights: Dictionary,
+		highlight_area := false,
 ) -> void:
 	# Here we recalculate the DijkstraMap to reflect the movement capacity derived from the given
 	# parameters; the location to move from, and the weight of each terrain type to consider.
 	var pos := main_tile_layer.local_to_map(world_pos)
 	var id := _position_to_id[pos]
-	dijkstra_map.recalculate(id, {"terrain_weights": terrain_weights})
+	dijkstra_map.recalculate(id, { "terrain_weights": terrain_weights })
 
 	# Get all tiles with cost below "max_cost"
 	var point_ids := dijkstra_map.get_all_points_with_cost_between(0.0, max_cost)
@@ -122,7 +126,7 @@ func calculate_path_to_cell(cell_pos: Vector2i) -> PackedVector2Array:
 	# calculate_moveable_area function.
 	# NOTE: we cast to Vector2 type since DijsktraMap works with float coordinates.
 	var path_ids := dijkstra_map.get_shortest_path_from_point(
-		_position_to_id[cell_pos]
+		_position_to_id[cell_pos],
 	)
 
 	var new_path := PackedVector2Array()
@@ -140,5 +144,7 @@ func highlight_cell_area(cell_positions: PackedVector2Array) -> void:
 	highlight_tile_layer.clear()
 	for cell_pos in cell_positions:
 		highlight_tile_layer.set_cell(
-			cell_pos, TILE_SET_SOURCE_ID, get_tileset_atlas_pos(Tiles.HIGHLIGHT)
+			cell_pos,
+			TILE_SET_SOURCE_ID,
+			get_tileset_atlas_pos(Tiles.HIGHLIGHT),
 		)

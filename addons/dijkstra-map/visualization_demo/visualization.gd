@@ -14,7 +14,7 @@ const GRIDMAP_C_SHARP_SCRIPT = "res://addons/dijkstra-map/visualization_demo/gri
 func _ready():
 	terrain_selection_item_list.select(0)
 	visualization_selection_item_list.select(0)
-	
+
 	if use_c_sharp:
 		gridmap.set_script(load(GRIDMAP_C_SHARP_SCRIPT))
 		gridmap.Setup()

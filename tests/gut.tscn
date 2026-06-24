@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://bandohsx0la8n"]
+[gd_scene format=3 uid="uid://66k37dcnq6on"]
 
-[ext_resource type="Script" uid="uid://wyw0d017ej07" path="res://addons/gut/gut.gd" id="1_kj448"]
+[ext_resource type="Script" uid="uid://duvvxvj18c04d" path="res://addons/gut/gut.gd" id="1_kj448"]
 
-[node name="Gut" type="Node"]
+[node name="Gut" type="Node" unique_id=1382349030]
 script = ExtResource("1_kj448")

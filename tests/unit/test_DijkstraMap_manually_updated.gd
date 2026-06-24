@@ -8,7 +8,7 @@ extends GutTest
 # Source file: lib.rs
 
 const TERRAIN_WEIGHTS_WARNING := (
-	"no terrain weights specified : all terrains will have infinite cost !")
+		"no terrain weights specified : all terrains will have infinite cost !")
 
 
 func test_new() -> void:
@@ -171,7 +171,7 @@ func test_get_direction_at_point() -> void:
 	dijkstra_map.add_point(1)
 	dijkstra_map.add_point(2)
 	dijkstra_map.connect_points(0, 1)
-	dijkstra_map.recalculate(0, {})
+	dijkstra_map.recalculate(0, { })
 	assert_engine_error(TERRAIN_WEIGHTS_WARNING)
 	assert_eq(dijkstra_map.get_direction_at_point(0), 0)
 	assert_eq(dijkstra_map.get_direction_at_point(1), 0)
@@ -184,7 +184,7 @@ func test_get_cost_at_point() -> void:
 	dijkstra_map.add_point(1)
 	dijkstra_map.add_point(2)
 	dijkstra_map.connect_points(0, 1)
-	dijkstra_map.recalculate(0, {})
+	dijkstra_map.recalculate(0, { })
 	assert_engine_error(TERRAIN_WEIGHTS_WARNING)
 	assert_eq(dijkstra_map.get_cost_at_point(0), 0.0)
 	assert_eq(dijkstra_map.get_cost_at_point(1), 1.0)
@@ -216,7 +216,7 @@ func test_get_direction_at_points() -> void:
 	dijkstra_map.add_point(1)
 	dijkstra_map.add_point(2)
 	dijkstra_map.connect_points(0, 1)
-	dijkstra_map.recalculate(0, {})
+	dijkstra_map.recalculate(0, { })
 	assert_engine_error(TERRAIN_WEIGHTS_WARNING)
 	assert_eq(Array(dijkstra_map.get_direction_at_points(PackedInt32Array([0, 1, 2]))), [0, 0, -1])
 
@@ -227,7 +227,7 @@ func test_get_cost_at_points() -> void:
 	dijkstra_map.add_point(1)
 	dijkstra_map.add_point(2)
 	dijkstra_map.connect_points(0, 1)
-	dijkstra_map.recalculate(0, {})
+	dijkstra_map.recalculate(0, { })
 	assert_engine_error(TERRAIN_WEIGHTS_WARNING)
 	assert_eq(Array(dijkstra_map.get_cost_at_points(PackedInt32Array([0, 1, 2]))), [0.0, 1.0, INF])
 
@@ -238,7 +238,7 @@ func test_get_cost_map() -> void:
 	dijkstra_map.add_point(1)
 	dijkstra_map.add_point(2)
 	dijkstra_map.connect_points(0, 1)
-	dijkstra_map.recalculate(0, {})
+	dijkstra_map.recalculate(0, { })
 	assert_engine_error(TERRAIN_WEIGHTS_WARNING)
 	var cost_map: Dictionary[int, float] = { 0: 0.0, 1: 1.0 }
 	var computed_cost_map := dijkstra_map.get_cost_map()
@@ -252,7 +252,7 @@ func test_get_direction_map() -> void:
 	dijkstra_map.add_point(1)
 	dijkstra_map.add_point(2)
 	dijkstra_map.connect_points(0, 1)
-	dijkstra_map.recalculate(0, {})
+	dijkstra_map.recalculate(0, { })
 	assert_engine_error(TERRAIN_WEIGHTS_WARNING)
 	var direction_map: Dictionary[int, int] = { 0: 0, 1: 0 }
 	var computed_direction_map := dijkstra_map.get_direction_map()
@@ -266,6 +266,6 @@ func test_get_all_points_with_cost_between() -> void:
 	dijkstra_map.add_point(1)
 	dijkstra_map.add_point(2)
 	dijkstra_map.connect_points(0, 1)
-	dijkstra_map.recalculate(0, {})
+	dijkstra_map.recalculate(0, { })
 	assert_engine_error(TERRAIN_WEIGHTS_WARNING)
 	assert_eq(Array(dijkstra_map.get_all_points_with_cost_between(0.5, 1.5)), [1])

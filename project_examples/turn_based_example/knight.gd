@@ -13,7 +13,7 @@ extends Node2D
 	ExampleDijkstraTileMap.Tiles.GRASS: 1.0,
 	ExampleDijkstraTileMap.Tiles.WATER: INF,
 	ExampleDijkstraTileMap.Tiles.BUSHES: 3.0,
-	ExampleDijkstraTileMap.Tiles.ROAD: 0.7
+	ExampleDijkstraTileMap.Tiles.ROAD: 0.7,
 }
 
 ## Track a list of world positions that the knight should try to walk through.
@@ -52,7 +52,9 @@ func _update_moveable_area() -> void:
 ## When a cell on the tilemap is selected, if the knight isn't moving and the tile is within
 ## movement range, find a path to it.
 func _on_dijkstra_tile_map_cell_selected(
-	cell_pos: Vector2i, _main_tile_type: int, is_in_highlight_area: bool
+		cell_pos: Vector2i,
+		_main_tile_type: int,
+		is_in_highlight_area: bool,
 ) -> void:
 	if !path.is_empty() or !is_in_highlight_area:
 		return

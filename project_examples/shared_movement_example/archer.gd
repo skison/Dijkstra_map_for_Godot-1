@@ -16,7 +16,7 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	if target_position != ExampleSharedDijkstraTileMap.INVALID_POS:
+	if not is_nan(target_position.x):
 		# Apply speed modifier and move the character.
 		var speed_modifier := map.get_speed_modifier(position)
 		# Check if target position has been reached.
@@ -36,5 +36,5 @@ func _process(delta: float) -> void:
 func _on_dijkstra_maps_recalculated() -> void:
 	var new_target_pos := map.get_target_for_archer(position)
 	# Avoid setting to INVALID_POS so the unit doesn't get stranded in an invalid spot
-	if new_target_pos != ExampleSharedDijkstraTileMap.INVALID_POS:
+	if not is_nan(new_target_pos.x):
 		target_position = new_target_pos

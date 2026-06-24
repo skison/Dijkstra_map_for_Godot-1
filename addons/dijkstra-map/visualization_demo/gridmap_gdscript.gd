@@ -17,7 +17,7 @@ const TERRAIN_WEIGHTS: Dictionary[int, float] = {
 	MainTiles.SMOOTH_TERRAIN: 1.0,
 	MainTiles.ROUGH_TERRAIN: 4.0,
 	MainTiles.WALL: INF,
-	MainTiles.ORIGIN: 1.0
+	MainTiles.ORIGIN: 1.0,
 }
 ## Map Vector2i directions (TileMap neighbor offsets) to their arrow tile representations.
 const ARROW_DIRECTIONS: Dictionary[Vector2i, int] = {
@@ -28,7 +28,7 @@ const ARROW_DIRECTIONS: Dictionary[Vector2i, int] = {
 	Vector2i(-1, 0): ArrowTiles.LEFT,
 	Vector2i(-1, 1): ArrowTiles.DOWN_LEFT,
 	Vector2i(0, -1): ArrowTiles.UP,
-	Vector2i(-1, -1): ArrowTiles.UP_LEFT
+	Vector2i(-1, -1): ArrowTiles.UP_LEFT,
 }
 ## We only have so many gradient tiles to represent a cost value, so we define the index limit here.
 const MAX_VISUAL_COST = 31
@@ -38,8 +38,8 @@ const MAX_VISUAL_COST = 31
 const TILEMAP_RECT := Rect2(0, 0, 23, 19)
 
 var dijkstramap := DijkstraMap.new() ## DijkstraMap object to be visualized
-var id_to_pos: Dictionary[int, Vector2i] = {} ## Mapping of Dijkstra node ids to cell coordinates
-var pos_to_id: Dictionary[Vector2i, int] = {} ## Reverse mapping of cell coords to Dijkstra nodes
+var id_to_pos: Dictionary[int, Vector2i] = { } ## Mapping of Dijkstra node ids to cell coordinates
+var pos_to_id: Dictionary[Vector2i, int] = { } ## Reverse mapping of cell coords to Dijkstra nodes
 var tile_to_draw := 0 ## Index of the main tile type to draw (terrain)
 var dragging := false ## True when the user's mouse is clicking & dragging
 
@@ -57,7 +57,7 @@ func setup() -> void:
 	if not InputMap.has_action("left_mouse_button"):
 		InputMap.add_action("left_mouse_button")
 	InputMap.action_add_event("left_mouse_button", event)
-	
+
 	pos_to_id.assign(dijkstramap.add_square_grid(TILEMAP_RECT))
 	for pos in pos_to_id:
 		id_to_pos[pos_to_id[pos]] = pos
@@ -70,15 +70,16 @@ func setup() -> void:
 func recalculate() -> void:
 	# Find all origin positions to calculate from
 	var targets := main_tile_layer.get_used_cells_by_id(
-		TileAtlases.MAIN, get_main_tileset_atlas_pos(MainTiles.ORIGIN)
+		TileAtlases.MAIN,
+		get_main_tileset_atlas_pos(MainTiles.ORIGIN),
 	)
 	var target_ids: Array[int] = []
 	for pos in targets:
 		target_ids.push_back(pos_to_id[pos])
-	dijkstramap.recalculate(target_ids, {"terrain_weights": TERRAIN_WEIGHTS})
+	dijkstramap.recalculate(target_ids, { "terrain_weights": TERRAIN_WEIGHTS })
 
 	# Visualize costs map
-	var costs: Dictionary[int, float] = {}
+	var costs: Dictionary[int, float] = { }
 	costs.assign(dijkstramap.get_cost_map())
 	costs_tile_layer.clear()
 
@@ -88,7 +89,7 @@ func recalculate() -> void:
 		costs_tile_layer.set_cell(
 			id_to_pos[id],
 			TileAtlases.GRADIENT,
-			get_tileset_atlas_pos_for_cost_value(costs[id])
+			get_tileset_atlas_pos_for_cost_value(costs[id]),
 		)
 
 	# Visualize directions map
@@ -101,7 +102,7 @@ func recalculate() -> void:
 		directions_tile_layer.set_cell(
 			id_to_pos[id],
 			TileAtlases.MAIN,
-			get_arrow_tile_atlas_pos_for_direction(dir)
+			get_arrow_tile_atlas_pos_for_direction(dir),
 		)
 
 
@@ -167,12 +168,15 @@ func _unhandled_input(event: InputEvent) -> void:
 		var pos := get_local_mouse_position()
 		var cell := main_tile_layer.local_to_map(pos)
 		if (
-			cell.x >= 0
-			and cell.x < TILEMAP_RECT.size.x
-			and cell.y >= 0
-			and cell.y < TILEMAP_RECT.size.y
+				cell.x >= 0
+				and cell.x < TILEMAP_RECT.size.x
+				and cell.y >= 0
+				and cell.y < TILEMAP_RECT.size.y
 		):
-			main_tile_layer.set_cell(cell, TileAtlases.MAIN,
-				get_main_tileset_atlas_pos(tile_to_draw))
+			main_tile_layer.set_cell(
+				cell,
+				TileAtlases.MAIN,
+				get_main_tileset_atlas_pos(tile_to_draw),
+			)
 			dijkstramap.set_terrain_for_point(pos_to_id[cell], tile_to_draw)
 			recalculate()

@@ -23,9 +23,10 @@ const TILE_ATLAS_COORDS: Dictionary[Tiles, Vector2i] = {
 	Tiles.WATER: Vector2i(1, 0),
 	Tiles.BUSHES: Vector2i(2, 0),
 	Tiles.ROAD: Vector2i(3, 0),
-	Tiles.HIGHLIGHT: Vector2i(0, 1)
+	Tiles.HIGHLIGHT: Vector2i(0, 1),
 }
-const INVALID_POS = Vector2(NAN, NAN) ## Represents an invalid 2D position
+## Represents an invalid 2D position; use is_nan(<vec>.x) for validity checks.
+const INVALID_POS = Vector2(NAN, NAN)
 const TILE_SET_SOURCE_ID = 0 ## ID of the TileSetSource used in our TileSet to provide tile options
 ## For this example, only these tile types will be considered for pathfinding.
 const WALKABLE_TILE_TYPES: Array[Tiles] = [Tiles.GRASS, Tiles.BUSHES, Tiles.ROAD]
@@ -33,7 +34,7 @@ const WALKABLE_TILE_TYPES: Array[Tiles] = [Tiles.GRASS, Tiles.BUSHES, Tiles.ROAD
 ## A value of INF means that the terrain type cannot be moved through.
 ## In this example, we assume all characters will share the same terrain weight restrictions, but we
 ## could move these out to the individual character scenes for more customizability.
-@export var tile_terrain_weights := {Tiles.GRASS: 1.0, Tiles.BUSHES: 2.0, Tiles.ROAD: 0.5}
+@export var tile_terrain_weights := { Tiles.GRASS: 1.0, Tiles.BUSHES: 2.0, Tiles.ROAD: 0.5 }
 
 @export var dragon: CharacterBody2D ## Dragon character; when it moves, we recalculate the map
 
@@ -42,8 +43,8 @@ var dijkstra_map_for_pikemen := DijkstraMap.new()
 ## DijkstraMap shared across Archer instances for pathfinding calculations.
 var dijkstra_map_for_archers := DijkstraMap.new()
 
-var _position_to_id: Dictionary[Vector2i, int] = {} # Maps cell positions to DijkstraMap node ids
-var _id_to_position: Dictionary[int, Vector2i] = {} # Reverse mapping of node ids to cell positions
+var _position_to_id: Dictionary[Vector2i, int] = { } # Maps cell positions to DijkstraMap node ids
+var _id_to_position: Dictionary[int, Vector2i] = { } # Reverse mapping of node ids to cell positions
 
 @onready var main_tile_layer: TileMapLayer = %MainTileLayer
 
@@ -52,7 +53,6 @@ var _id_to_position: Dictionary[int, Vector2i] = {} # Reverse mapping of node id
 func _ready() -> void:
 	# For pathfinding, we must first add all points and connections to the dijkstra maps.
 	# This only has to be done once, when the project loads.
-
 	# In this example, we collect all walkable tiles from the tilemap and add a node for each one.
 	# This approach is more complex than using the add_square_grid shortcut method, but gives us the
 	# benefit of leaving out nodes that don't need to be there (e.g. water since our characters
@@ -61,7 +61,8 @@ func _ready() -> void:
 	var walkable_tiles: Array[Vector2i] = []
 	for tile_type in WALKABLE_TILE_TYPES:
 		walkable_tiles += main_tile_layer.get_used_cells_by_id(
-			TILE_SET_SOURCE_ID, TILE_ATLAS_COORDS[tile_type]
+			TILE_SET_SOURCE_ID,
+			TILE_ATLAS_COORDS[tile_type],
 		)
 
 	# Now we insert the points
@@ -82,7 +83,7 @@ func _ready() -> void:
 		Vector2i.DOWN + Vector2i.LEFT,
 		Vector2i.UP + Vector2i.LEFT,
 		Vector2i.DOWN + Vector2i.RIGHT,
-		Vector2i.UP + Vector2i.RIGHT
+		Vector2i.UP + Vector2i.RIGHT,
 	]
 	# Pair the defined directions with a cost value for each; orthogonal nodes will cost 1 unit to
 	# move, whereas diagonal ones will cost sqrt(2). This is designed to be easily looped through.
@@ -112,7 +113,10 @@ func _ready() -> void:
 				# connections each time and add bidirectional connections for each, but this is only
 				# helpful if we don't need to support unidirectional paths.
 				dijkstra_map_for_archers.connect_points(
-					id_of_current_tile, id_of_neighbour, cost, false
+					id_of_current_tile,
+					id_of_neighbour,
+					cost,
+					false,
 				)
 
 	# Now we will duplicate the points and connections into dijkstra_map_for_pikemen.
@@ -131,7 +135,9 @@ func _ready() -> void:
 func recalculate_dijkstra_maps() -> void:
 	# Which node is the dragon currently on?
 	var dragon_position_id: int = _position_to_id.get(
-		main_tile_layer.local_to_map(dragon.position), 0)
+		main_tile_layer.local_to_map(dragon.position),
+		0,
+	)
 	# - We want pikemen to charge the dragon's position head on.
 	# - We .recalculate() the DijkstraMap.
 	# - First argument is the origin (by default) or destination (i.e. the ID of the point where
@@ -140,7 +146,8 @@ func recalculate_dijkstra_maps() -> void:
 	#   are used.
 	# - We will specify the terrain weights and specify that input is the destination, not origin.
 	var optional_parameters: Dictionary = {
-		"terrain_weights": tile_terrain_weights, "input_is_destination": true
+		"terrain_weights": tile_terrain_weights,
+		"input_is_destination": true,
 	}
 
 	var res := dijkstra_map_for_pikemen.recalculate(dragon_position_id, optional_parameters)
@@ -157,10 +164,11 @@ func recalculate_dijkstra_maps() -> void:
 	assert(res == 0)
 	# Now we get IDs of all points safe distance from dragon_position_id, but within firing range
 	var stand_over_here := dijkstra_map_for_archers.get_all_points_with_cost_between(4.0, 5.0)
-	optional_parameters = {"terrain_weights": tile_terrain_weights, "input_is_destination": true}
+	optional_parameters = { "terrain_weights": tile_terrain_weights, "input_is_destination": true }
 	# And we pass those points as new destinations for the archers to walk towards
 	res = dijkstra_map_for_archers.recalculate(
-		stand_over_here, {"terrain_weights": tile_terrain_weights}
+		stand_over_here,
+		{ "terrain_weights": tile_terrain_weights },
 	)
 	assert(res == 0)
 	# BTW yes, Dijkstra map works for multiple destination points too; the path will simply lead
@@ -179,7 +187,8 @@ func get_tileset_atlas_pos(tile_type: int) -> Vector2i:
 ## Returns -1 if the type isn't found.
 func get_tile_type_from_cell_position(cell_pos: Vector2i) -> int:
 	var tile_type: Variant = TILE_ATLAS_COORDS.find_key(
-		main_tile_layer.get_cell_atlas_coords(cell_pos))
+		main_tile_layer.get_cell_atlas_coords(cell_pos),
+	)
 	# Explicit null check to include 0 case
 	return tile_type if tile_type != null else -1
 
@@ -203,7 +212,7 @@ func get_target_for_pikeman(pos: Vector2) -> Vector2:
 
 	# We look up in the Dijkstra map where the pikeman should go next
 	var target_id := dijkstra_map_for_pikemen.get_direction_at_point(
-		_position_to_id.get(map_coords, 0)
+		_position_to_id.get(map_coords, 0),
 	)
 	# If dragon_position_id is inaccessible from current position, then Dijkstra map
 	# spits out -1, and we don't move.
@@ -220,7 +229,7 @@ func get_target_for_archer(pos: Vector2) -> Vector2:
 
 	# We look up in the Dijkstra map where the archer should go next
 	var target_id := dijkstra_map_for_archers.get_direction_at_point(
-		_position_to_id.get(map_coords, 0)
+		_position_to_id.get(map_coords, 0),
 	)
 	# If dragon_position_id is inaccessible from current position, then Dijkstra map
 	# spits out -1, and we don't move.
