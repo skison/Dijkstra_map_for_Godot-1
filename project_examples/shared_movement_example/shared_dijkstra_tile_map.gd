@@ -25,9 +25,10 @@ const TILE_ATLAS_COORDS: Dictionary[Tiles, Vector2i] = {
 	Tiles.ROAD: Vector2i(3, 0),
 	Tiles.HIGHLIGHT: Vector2i(0, 1)
 }
+const INVALID_POS = Vector2(NAN, NAN) ## Represents an invalid 2D position
 const TILE_SET_SOURCE_ID = 0 ## ID of the TileSetSource used in our TileSet to provide tile options
 ## For this example, only these tile types will be considered for pathfinding.
-const WALKABLE_TILE_TYPES = [Tiles.GRASS, Tiles.BUSHES, Tiles.ROAD]
+const WALKABLE_TILE_TYPES: Array[Tiles] = [Tiles.GRASS, Tiles.BUSHES, Tiles.ROAD]
 ## Define weights for terrain types, so certain terrains can be passed through more or less easily.
 ## A value of INF means that the terrain type cannot be moved through.
 ## In this example, we assume all characters will share the same terrain weight restrictions, but we
@@ -122,7 +123,7 @@ func _ready() -> void:
 	recalculate_dijkstra_maps()
 
 	# Whenever the dragon moves, immediately recalculate the dijkstra maps
-	dragon.moved.connect(func(): recalculate_dijkstra_maps())
+	dragon.moved.connect(recalculate_dijkstra_maps)
 
 
 ## Update the DijkstraMaps based on the Dragon's current position with different behaviors for
@@ -177,7 +178,8 @@ func get_tileset_atlas_pos(tile_type: int) -> Vector2i:
 ## If possible, get the tile type given a cell position within the tilemap.
 ## Returns -1 if the type isn't found.
 func get_tile_type_from_cell_position(cell_pos: Vector2i) -> int:
-	var tile_type = TILE_ATLAS_COORDS.find_key(main_tile_layer.get_cell_atlas_coords(cell_pos))
+	var tile_type: Variant = TILE_ATLAS_COORDS.find_key(
+		main_tile_layer.get_cell_atlas_coords(cell_pos))
 	# Explicit null check to include 0 case
 	return tile_type if tile_type != null else -1
 
@@ -195,8 +197,8 @@ func get_speed_modifier(world_pos: Vector2) -> float:
 
 
 ## Given the position of a pikeman, find an immediate destination for it to try to move to.
-## Returns null if there is no valid target position.
-func get_target_for_pikeman(pos: Vector2):
+## Returns INVALID_POS if there is no valid target position.
+func get_target_for_pikeman(pos: Vector2) -> Vector2:
 	var map_coords := main_tile_layer.local_to_map(pos)
 
 	# We look up in the Dijkstra map where the pikeman should go next
@@ -206,14 +208,14 @@ func get_target_for_pikeman(pos: Vector2):
 	# If dragon_position_id is inaccessible from current position, then Dijkstra map
 	# spits out -1, and we don't move.
 	if target_id == -1:
-		return null
+		return INVALID_POS
 	var target_coords := _id_to_position[target_id]
 	return main_tile_layer.map_to_local(target_coords)
 
 
 ## Given the position of an archer, find an immediate destination for it to try to move to.
-## Returns null if there is no valid target position.
-func get_target_for_archer(pos: Vector2):
+## Returns INVALID_POS if there is no valid target position.
+func get_target_for_archer(pos: Vector2) -> Vector2:
 	var map_coords := main_tile_layer.local_to_map(pos)
 
 	# We look up in the Dijkstra map where the archer should go next
@@ -223,7 +225,7 @@ func get_target_for_archer(pos: Vector2):
 	# If dragon_position_id is inaccessible from current position, then Dijkstra map
 	# spits out -1, and we don't move.
 	if target_id == -1:
-		return null
+		return INVALID_POS
 	var target_coords := _id_to_position[target_id]
 	return main_tile_layer.map_to_local(target_coords)
 

@@ -32,7 +32,7 @@ func _process(delta: float) -> void:
 		var direction := position.direction_to(path[-1])
 
 		# Apply speed modifier and move the character.
-		var terrain_type = map.get_tile_type_from_world_position(position)
+		var terrain_type := map.get_tile_type_from_world_position(position)
 		var speed_modifier: float = 1.0 / tile_terrain_weights.get(terrain_type, 1.0)
 		position += direction * delta * speed * speed_modifier
 
@@ -45,7 +45,7 @@ func _process(delta: float) -> void:
 
 
 ## Make the DijkstraMap calculate & show the knight's moveable area.
-func _update_moveable_area():
+func _update_moveable_area() -> void:
 	map.calculate_moveable_area(position, energy, tile_terrain_weights, true)
 
 
@@ -53,7 +53,7 @@ func _update_moveable_area():
 ## movement range, find a path to it.
 func _on_dijkstra_tile_map_cell_selected(
 	cell_pos: Vector2i, _main_tile_type: int, is_in_highlight_area: bool
-):
+) -> void:
 	if !path.is_empty() or !is_in_highlight_area:
 		return
 

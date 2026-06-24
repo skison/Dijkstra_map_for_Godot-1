@@ -7,18 +7,18 @@ extends CharacterBody2D
 @export var speed: float = 40.0
 @export var map: ExampleSharedDijkstraTileMap ## Base tilemap that the archer navigates within
 
-## Track an immediate position to move toward (Vector2 or null if no target).
-var target_position = null
+## Track an immediate position to move toward (Vector2; INVALID_POS if no target).
+var target_position: Vector2 = ExampleSharedDijkstraTileMap.INVALID_POS
 
 
 ## On ready, start listening to DijkstraMap recalculation events.
-func _ready():
+func _ready() -> void:
 	map.maps_recalculated.connect(_on_dijkstra_maps_recalculated)
 
 
 ## If a target position is defined, move toward it, then find a new target once it is reached.
 func _process(delta: float) -> void:
-	if target_position != null:
+	if target_position != ExampleSharedDijkstraTileMap.INVALID_POS:
 		var direction := position.direction_to(target_position)
 
 		# Apply speed modifier and move the character.
@@ -33,16 +33,16 @@ func _process(delta: float) -> void:
 
 		# Check if target position has been reached.
 		if position.distance_to(target_position) <= delta * speed * speed_modifier:
-			target_position = null
+			target_position = ExampleSharedDijkstraTileMap.INVALID_POS
 
 	# Try to get a new target position if needed.
-	if target_position == null:
+	if target_position == ExampleSharedDijkstraTileMap.INVALID_POS:
 		target_position = map.get_target_for_pikeman(position)
 
 
 ## Whenever the dijkstramaps are recalculated, see if there is a new target position.
-func _on_dijkstra_maps_recalculated():
-	var new_target_pos = map.get_target_for_pikeman(position)
-	# Avoid setting to null so the unit doesn't get stranded in an invalid spot
-	if new_target_pos != null:
+func _on_dijkstra_maps_recalculated() -> void:
+	var new_target_pos := map.get_target_for_pikeman(position)
+	# Avoid setting to INVALID_POS so the unit doesn't get stranded in an invalid spot
+	if new_target_pos != ExampleSharedDijkstraTileMap.INVALID_POS:
 		target_position = new_target_pos

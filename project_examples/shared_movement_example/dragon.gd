@@ -9,17 +9,17 @@ signal moved
 
 
 ## On ready, start listening to TileMap cell selection events.
-func _ready():
+func _ready() -> void:
 	map.cell_selected.connect(_on_dijkstra_tile_map_cell_selected)
 
 
 ## When a cell on the tilemap is selected, move the dragon over to it.
-func _on_dijkstra_tile_map_cell_selected(_cell_pos: Vector2i, world_pos: Vector2):
+func _on_dijkstra_tile_map_cell_selected(_cell_pos: Vector2i, world_pos: Vector2) -> void:
 	position = world_pos
 	moved.emit()
 
 
 ## Push the dragon in a given direction.
-func push(direction: Vector2, strength: float):
+func push(direction: Vector2, strength: float) -> void:
 	velocity = direction * strength
 	move_and_slide()

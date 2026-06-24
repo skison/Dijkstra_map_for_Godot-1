@@ -48,7 +48,7 @@ func _ready() -> void:
 	_position_to_id.assign(dijkstra_map.add_square_grid(rect, -1, 1.0, 1.4))
 
 	# Now we will iterate through the positions and change the terrains to the appropriate values.
-	for pos in _position_to_id.keys():
+	for pos: Vector2i in _position_to_id.keys():
 		var id := _position_to_id[pos]
 		# We will simply use the IDs of the tiles in tileset
 		var terrain_id := get_tile_type_from_cell_position(pos)
@@ -80,7 +80,8 @@ func get_tileset_atlas_pos(tile_type: int) -> Vector2i:
 ## If possible, get the tile type given a cell position within the tilemap.
 ## Returns -1 if the type isn't found.
 func get_tile_type_from_cell_position(cell_pos: Vector2i) -> int:
-	var tile_type: int = TILE_ATLAS_COORDS.find_key(main_tile_layer.get_cell_atlas_coords(cell_pos))
+	var tile_type: Variant = TILE_ATLAS_COORDS.find_key(
+		main_tile_layer.get_cell_atlas_coords(cell_pos))
 	# Explicit null check to include 0 case
 	return tile_type if tile_type != null else -1
 

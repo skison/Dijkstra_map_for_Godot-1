@@ -580,7 +580,7 @@ impl DijkstraMap {
         // TODO: make optional when possible; not supported for mutable types as of gdext v0.5.3.
         // See: https://github.com/godot-rust/gdext/pull/1406
         // Renamed (temporarily?) from `optional_params` to avoid confusion on the param req.
-        params: VarDictionary,
+        params: AnyDictionary,
     ) -> i64 {
         const TERRAIN_WEIGHT: &str = "terrain_weights";
         const TERMINATION_POINTS: &str = "termination_points";

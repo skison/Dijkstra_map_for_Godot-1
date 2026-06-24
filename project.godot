@@ -15,6 +15,10 @@ run/main_scene="res://addons/dijkstra-map/visualization_demo/visualization.tscn"
 config/features=PackedStringArray("4.6", "C#")
 config/icon="uid://cuk23l73cagcw"
 
+[debug]
+
+gdscript/warnings/untyped_declaration=2
+
 [display]
 
 window/stretch/mode="viewport"
