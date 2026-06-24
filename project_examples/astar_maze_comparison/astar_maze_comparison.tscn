@@ -145,11 +145,12 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Start Position:"
 
-[node name="StartPosCoordsLabel" type="Label" parent="MarginContainer/VBoxContainer/Step2Container/VBoxContainer/StartPosContainer" unique_id=901542107]
+[node name="StartPosCoordsButton" type="Button" parent="MarginContainer/VBoxContainer/Step2Container/VBoxContainer/StartPosContainer" unique_id=710595145]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 text = "(0, 0)"
+alignment = 0
 
 [node name="HSeparator2" type="HSeparator" parent="MarginContainer/VBoxContainer/Step2Container/VBoxContainer" unique_id=1450337337]
 layout_mode = 2
@@ -168,15 +169,36 @@ layout_mode = 2
 size_flags_horizontal = 3
 horizontal_scroll_mode = 0
 
-[node name="EndPosListLabel" type="Label" parent="MarginContainer/VBoxContainer/Step2Container/VBoxContainer/EndPosContainer/EndPosListContainer" unique_id=576722600]
+[node name="EndPosVBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Step2Container/VBoxContainer/EndPosContainer/EndPosListContainer" unique_id=1365411148]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-text = "(0, 0)
-(3, 4)
-(43, 21)
-(99. 100)
-(20, 2)"
+theme_override_constants/separation = 0
+
+[node name="SampleEndPosButton1" type="Button" parent="MarginContainer/VBoxContainer/Step2Container/VBoxContainer/EndPosContainer/EndPosListContainer/EndPosVBoxContainer" unique_id=1897261246]
+layout_mode = 2
+text = "(0, 0)"
+alignment = 0
+
+[node name="SampleEndPosButton2" type="Button" parent="MarginContainer/VBoxContainer/Step2Container/VBoxContainer/EndPosContainer/EndPosListContainer/EndPosVBoxContainer" unique_id=730903604]
+layout_mode = 2
+text = "(3, 4)"
+alignment = 0
+
+[node name="SampleEndPosButton3" type="Button" parent="MarginContainer/VBoxContainer/Step2Container/VBoxContainer/EndPosContainer/EndPosListContainer/EndPosVBoxContainer" unique_id=341156392]
+layout_mode = 2
+text = "(43, 21)"
+alignment = 0
+
+[node name="SampleEndPosButton4" type="Button" parent="MarginContainer/VBoxContainer/Step2Container/VBoxContainer/EndPosContainer/EndPosListContainer/EndPosVBoxContainer" unique_id=1562821880]
+layout_mode = 2
+text = "(99. 100)"
+alignment = 0
+
+[node name="SampleEndPosButton5" type="Button" parent="MarginContainer/VBoxContainer/Step2Container/VBoxContainer/EndPosContainer/EndPosListContainer/EndPosVBoxContainer" unique_id=129716778]
+layout_mode = 2
+text = "(20, 2)"
+alignment = 0
 
 [node name="Step3Container" type="PanelContainer" parent="MarginContainer/VBoxContainer" unique_id=955315722]
 layout_mode = 2
@@ -242,13 +264,13 @@ horizontal_alignment = 2
 [node name="DijkstraGraphSetupTimeLabel" type="Label" parent="MarginContainer/VBoxContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=1150377534]
 unique_name_in_owner = true
 layout_mode = 2
-text = "0ms"
+text = "0μs"
 horizontal_alignment = 1
 
 [node name="AStarGraphSetupTimeLabel" type="Label" parent="MarginContainer/VBoxContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=114347507]
 unique_name_in_owner = true
 layout_mode = 2
-text = "0ms"
+text = "0μs"
 horizontal_alignment = 1
 
 [node name="SolveStepTimeLabel" type="Label" parent="MarginContainer/VBoxContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=13876148]
@@ -259,32 +281,16 @@ horizontal_alignment = 2
 [node name="DijkstraSolveStepTimeLabel" type="Label" parent="MarginContainer/VBoxContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=400026117]
 unique_name_in_owner = true
 layout_mode = 2
-text = "0ms"
+text = "0μs"
 horizontal_alignment = 1
 
 [node name="AStarSolveStepTimeLabel" type="Label" parent="MarginContainer/VBoxContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=346851933]
 unique_name_in_owner = true
 layout_mode = 2
-text = "0ms"
-horizontal_alignment = 1
-
-[node name="TotalTimeLabel" type="Label" parent="MarginContainer/VBoxContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=455120368]
-layout_mode = 2
-text = "Total"
-horizontal_alignment = 2
-
-[node name="DijkstraTotalTimeLabel" type="Label" parent="MarginContainer/VBoxContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=166765591]
-unique_name_in_owner = true
-layout_mode = 2
-text = "0ms"
-horizontal_alignment = 1
-
-[node name="AStarTotalTimeLabel" type="Label" parent="MarginContainer/VBoxContainer/PanelContainer/VBoxContainer/GridContainer" unique_id=1984985269]
-unique_name_in_owner = true
-layout_mode = 2
-text = "0ms"
+text = "0μs"
 horizontal_alignment = 1
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Step1Container/VBoxContainer/SeedContainer/RandomSeedButton" to="." method="_on_random_seed_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Step1Container/VBoxContainer/GenerateMazeButton" to="." method="generate_maze"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Step2Container/VBoxContainer/StartPosContainer/StartPosCoordsButton" to="." method="_on_start_pos_coords_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Step3Container/VBoxContainer/SolveMazeButton" to="." method="solve_maze"]

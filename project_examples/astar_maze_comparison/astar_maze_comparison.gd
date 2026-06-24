@@ -4,7 +4,7 @@ extends Node
 ## The calculations of both implementations are timed, so you can see how the performance of each
 ## varies if this is of concern to you (most use cases can use either approach without worry).
 ## Please note that DijkstraMap and AStar do not offer the same set of features, so be sure to take
-## this into account if deciding whether to use one or the other for a more complex project.
+## this into account when deciding whether to use one or the other for a more complex project.
 ##
 ## Note about "Grid Methods" and performance impacts: both DijkstraMap and AStar have shortcut
 ## implementations for setting up a uniform grid of nodes for pathfinding, but they are used very
@@ -18,8 +18,8 @@ extends Node
 ##   this example (there is no concept of terrain weights here). As a result, it is far less
 ##   flexible than DijkstraMap, but may lead to greater performance especially over the AStar2D
 ##   counterpart.
-## The implementation of the grid methods here are not tuned for maximum performance - if you want a
-## more performant DijkstraMap grid method solution, you should instead use the remove_point or
+## The implementation of the grid methods here are not tuned for maximum performance. If you want a
+## more performant DijkstraMap grid method solution, you could try instead using the remove_point or
 ## disable_point method for each wall node on the grid so they won't be checked during pathfinding,
 ## but this may not be any faster overall than the regular non-grid setup. You could also consider
 ## rewriting this GDScript code in C# or C++ for better performance.
@@ -35,14 +35,34 @@ const TILE_ATLAS_COORDS: Dictionary[Tiles, Vector2i] = {
 	Tiles.END: Vector2i(4, 0),
 }
 const TILE_SET_SOURCE_ID = 0 ## ID of the TileSetSource used in our TileSet to provide tile options
+
 ## Maze node dimensions are not exactly the same as the tilemap cell dimensions; for the purposes of
 ## generating a maze with square tiles, we need to have buffer tiles around each maze node so that
 ## we can then break away walls to create connections to neighbor nodes. So the tilemap's dimensions
 ## will always be this value multiplied by 2, plus 1.
+var maze_dimensions := Vector2i(16, 16)
+var scale_dimensions := Vector2i(9, 9) ## Approximate editor maze dimensions to scale against 
 
-var maze_dimensions := Vector2i(9, 9)
 var maze_nodes: Array[Array] = [] ## 2D array initialized to false values, set to true once visited
-var start_point := Vector2i(NAN, NAN) ## Point to pathfind from
+## Point to pathfind from; setter automatically handles visual updates.
+## NOTE: in this example, Vector2i.MIN represents an invalid position.
+var start_point := Vector2i.MIN:
+	set(value):
+		# Clear old point on the grid if it was valid
+		if start_point != Vector2i.MIN:
+			points_tile_layer.erase_cell(start_point)
+
+		start_point = value
+		start_pos_coords_button.text = "-" if start_point == Vector2i.MIN else str(start_point)
+
+		# Render the new point on the grid if it is valid
+		if start_point != Vector2i.MIN:
+			points_tile_layer.set_cell(
+				start_point,
+				TILE_SET_SOURCE_ID,
+				TILE_ATLAS_COORDS[Tiles.START],
+			)
+
 var end_points: Array[Vector2i] ## Point or points to pathfind to
 
 ## Store references to the tilemap layers and certain UI inputs and labels.
@@ -52,17 +72,13 @@ var end_points: Array[Vector2i] ## Point or points to pathfind to
 @onready var seed_input: SpinBox = %SeedInput
 @onready var width_input: SpinBox = %WidthInput
 @onready var height_input: SpinBox = %HeightInput
-@onready var start_pos_coords_label: Label = %StartPosCoordsLabel
-@onready var end_pos_list_label: Label = %EndPosListLabel
+@onready var start_pos_coords_button: Button = %StartPosCoordsButton
+@onready var end_pos_v_box_container: VBoxContainer = %EndPosVBoxContainer
 @onready var use_grid_methods_button: CheckButton = %UseGridMethodsButton
 @onready var dijkstra_graph_setup_time_label: Label = %DijkstraGraphSetupTimeLabel
 @onready var a_star_graph_setup_time_label: Label = %AStarGraphSetupTimeLabel
 @onready var dijkstra_solve_step_time_label: Label = %DijkstraSolveStepTimeLabel
 @onready var a_star_solve_step_time_label: Label = %AStarSolveStepTimeLabel
-@onready var dijkstra_total_time_label: Label = %DijkstraTotalTimeLabel
-@onready var a_star_total_time_label: Label = %AStarTotalTimeLabel
-
-@onready var initial_dimensions := maze_dimensions ## Save this so we can scale the map size later
 
 
 ## On ready, generate an initial maze to use.
@@ -88,9 +104,13 @@ func generate_maze() -> void:
 	main_tile_layer.clear()
 	path_tile_layer.clear()
 	points_tile_layer.clear()
-	start_point = Vector2i(NAN, NAN)
+	start_point = Vector2i.MIN
 	end_points = []
-	_updated_map_points()
+	start_pos_coords_button.text = "-"
+	for end_point_button in end_pos_v_box_container.get_children():
+		end_pos_v_box_container.remove_child(end_point_button)
+		end_point_button.queue_free()
+
 	# Set maze to an empty rectangle of the needed size
 	maze_dimensions = Vector2i(int(width_input.value), int(height_input.value))
 	var tilemap_dimensions := maze_dimensions * 2 + Vector2i.ONE
@@ -103,7 +123,7 @@ func generate_maze() -> void:
 			)
 
 	# Scale visually to fit new maze size comfortably on the screen
-	var new_scale := Vector2(initial_dimensions) / Vector2(maze_dimensions)
+	var new_scale := Vector2(scale_dimensions) / Vector2(maze_dimensions)
 	new_scale = Vector2(min(new_scale.x, new_scale.y), min(new_scale.x, new_scale.y))
 	main_tile_layer.scale = new_scale
 	path_tile_layer.scale = new_scale
@@ -196,36 +216,44 @@ func _tilemap_cell_selected(cell: Vector2i) -> void:
 
 	var existing_cell_atlas_coords := points_tile_layer.get_cell_atlas_coords(cell)
 	if existing_cell_atlas_coords == Vector2i(-1, -1): # Empty cell
-		if start_point == Vector2i(NAN, NAN):
+		if start_point == Vector2i.MIN:
 			start_point = cell
-			points_tile_layer.set_cell(cell, TILE_SET_SOURCE_ID, TILE_ATLAS_COORDS[Tiles.START])
 		else:
 			end_points.push_back(cell)
 			points_tile_layer.set_cell(cell, TILE_SET_SOURCE_ID, TILE_ATLAS_COORDS[Tiles.END])
+			# Add a button that can be used to show & delete this point
+			var end_point_button := Button.new()
+			end_point_button.text = str(cell)
+			end_point_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
+			end_point_button.pressed.connect(
+				func() -> void:
+					end_points.erase(cell)
+					points_tile_layer.erase_cell(cell)
+					end_pos_v_box_container.remove_child(end_point_button)
+					end_point_button.queue_free()
+			)
+			end_pos_v_box_container.add_child(end_point_button)
+
 	else: # Start or end point is already here
 		if existing_cell_atlas_coords == TILE_ATLAS_COORDS[Tiles.START]:
-			start_point = Vector2i(NAN, NAN)
+			start_point = Vector2i.MIN
 		else:
 			end_points.erase(cell)
-		points_tile_layer.erase_cell(cell)
+			# Remove the corresponding button if there was one
+			var cell_str := str(cell)
+			for end_point_button: Button in end_pos_v_box_container.get_children():
+				if cell_str == end_point_button.text:
+					end_pos_v_box_container.remove_child(end_point_button)
+					end_point_button.queue_free()
 
-	_updated_map_points()
-
-
-## Whenever the start or end points are updated, update the UI labels to match.
-func _updated_map_points() -> void:
-	start_pos_coords_label.text = "%s" % start_point if start_point else "-"
-	if end_points.size() == 0:
-		end_pos_list_label.text = "-"
-	else:
-		end_pos_list_label.text = "\n".join(end_points)
+			points_tile_layer.erase_cell(cell)
 
 
 ## Solve the maze with both AStar and DijkstraMap, from scratch.
 func solve_maze() -> void:
 	path_tile_layer.clear()
 
-	if start_point == Vector2i(NAN, NAN) || end_points.is_empty():
+	if start_point == Vector2i.MIN || end_points.is_empty():
 		return
 
 	_solve_maze_for_dijkstra()
@@ -238,7 +266,7 @@ func _solve_maze_for_dijkstra() -> void:
 	var tilemap_dimensions := maze_dimensions * 2 + Vector2i.ONE
 	var use_grid_methods := use_grid_methods_button.button_pressed
 
-	var dijkstra_init_time_marker := Time.get_ticks_msec()
+	var dijkstra_init_time_marker := Time.get_ticks_usec()
 
 	# Dijkstra Step 1: set up the DijkstraMap (graph)
 
@@ -262,7 +290,7 @@ func _solve_maze_for_dijkstra() -> void:
 			),
 		)
 		# Update terrains for walls and ground tiles so pathfinding will be accurate
-		for pos: Vector2i in dijkstra_grid_points_to_ids.keys():
+		for pos: Vector2i in dijkstra_grid_points_to_ids:
 			var id: int = dijkstra_grid_points_to_ids[pos]
 			var terrain_id: int = get_tile_type_from_cell_position(pos)
 			dijkstra_map.set_terrain_for_point(id, terrain_id)
@@ -340,7 +368,7 @@ func _solve_maze_for_dijkstra() -> void:
 				)
 		)
 
-	var dijkstra_setup_time_marker := Time.get_ticks_msec()
+	var dijkstra_setup_time_marker := Time.get_ticks_usec()
 
 	# Dijkstra Step 2: Solve for each path
 
@@ -348,7 +376,7 @@ func _solve_maze_for_dijkstra() -> void:
 	for dijkstra_end_point in dijkstra_end_points:
 		solved_paths.push_back(dijkstra_map.get_shortest_path_from_point(dijkstra_end_point))
 
-	var dijkstra_solve_time_marker := Time.get_ticks_msec()
+	var dijkstra_solve_time_marker := Time.get_ticks_usec()
 
 	# Bonus non-timed step: color in the paths visually by updating the tilemap
 	for solved_path in solved_paths:
@@ -362,11 +390,9 @@ func _solve_maze_for_dijkstra() -> void:
 
 	var dijkstra_setup_time := dijkstra_setup_time_marker - dijkstra_init_time_marker
 	var dijkstra_solve_time := dijkstra_solve_time_marker - dijkstra_setup_time_marker
-	var dijkstra_total_time := dijkstra_setup_time + dijkstra_solve_time
 
-	dijkstra_graph_setup_time_label.text = "%dms" % dijkstra_setup_time
-	dijkstra_solve_step_time_label.text = "%dms" % dijkstra_solve_time
-	dijkstra_total_time_label.text = "%dms" % dijkstra_total_time
+	dijkstra_graph_setup_time_label.text = "%dμs" % dijkstra_setup_time
+	dijkstra_solve_step_time_label.text = "%dμs" % dijkstra_solve_time
 
 
 ## Use AStar to solve the maze (either the normal AStar2D class or the AStarGrid2D shortcut class)
@@ -374,7 +400,7 @@ func _solve_maze_for_astar() -> void:
 	var tilemap_dimensions := maze_dimensions * 2 + Vector2i.ONE
 	var use_grid_methods := use_grid_methods_button.button_pressed
 
-	var astar_init_time_marker := Time.get_ticks_msec()
+	var astar_init_time_marker := Time.get_ticks_usec()
 	var astar_setup_time_marker: int
 	var astar_solve_time_marker: int
 
@@ -398,7 +424,7 @@ func _solve_maze_for_astar() -> void:
 				if tile_type == Tiles.WALL:
 					astar_grid.set_point_solid(tilemap_coords, true)
 
-		astar_setup_time_marker = Time.get_ticks_msec()
+		astar_setup_time_marker = Time.get_ticks_usec()
 
 		# AStar Step 2: Solve for each path
 
@@ -406,7 +432,7 @@ func _solve_maze_for_astar() -> void:
 		for end_point in end_points:
 			solved_paths.push_back(astar_grid.get_id_path(start_point, end_point))
 
-		astar_solve_time_marker = Time.get_ticks_msec()
+		astar_solve_time_marker = Time.get_ticks_usec()
 
 	# Use the AStar2D implementation
 	else:
@@ -452,7 +478,7 @@ func _solve_maze_for_astar() -> void:
 				tilemap_coords_to_dijkstra_id(end_point, tilemap_dimensions.x),
 			)
 
-		astar_setup_time_marker = Time.get_ticks_msec()
+		astar_setup_time_marker = Time.get_ticks_usec()
 
 		# AStar Step 2: Solve for each path
 
@@ -460,15 +486,13 @@ func _solve_maze_for_astar() -> void:
 		for astar_end_point in astar_end_points:
 			solved_paths.push_back(astar.get_id_path(astar_start_point, astar_end_point))
 
-		astar_solve_time_marker = Time.get_ticks_msec()
+		astar_solve_time_marker = Time.get_ticks_usec()
 
 	var astar_setup_time := astar_setup_time_marker - astar_init_time_marker
 	var astar_solve_time := astar_solve_time_marker - astar_setup_time_marker
-	var astar_total_time := astar_setup_time + astar_solve_time
 
-	a_star_graph_setup_time_label.text = "%dms" % astar_setup_time
-	a_star_solve_step_time_label.text = "%dms" % astar_solve_time
-	a_star_total_time_label.text = "%dms" % astar_total_time
+	a_star_graph_setup_time_label.text = "%dμs" % astar_setup_time
+	a_star_solve_step_time_label.text = "%dμs" % astar_solve_time
 
 
 ## Convert a coordinate pair on the tilemap to a unique integer index that can be used with a
@@ -494,3 +518,7 @@ func get_tile_type_from_cell_position(cell_pos: Vector2i) -> int:
 ## Generate a new random seed on button press.
 func _on_random_seed_button_pressed() -> void:
 	seed_input.value = randi_range(int(seed_input.min_value), int(seed_input.max_value))
+
+
+func _on_start_pos_coords_button_pressed() -> void:
+	start_point = Vector2i.MIN

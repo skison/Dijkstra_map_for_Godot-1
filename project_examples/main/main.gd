@@ -19,7 +19,8 @@ const TILE_ATLAS_COORDS: Dictionary[Tiles, Vector2i] = {
 const PROJECT_DEMOS: Dictionary[String, String] = {
 	"visualization_demo": "res://addons/dijkstra-map/visualization_demo/visualization.tscn",
 	"turn_based_movement": "res://project_examples/turn_based_example/turn_based_example.tscn",
-	"shared_movement": "res://project_examples/shared_movement_example/shared_movement_example.tscn",
+	"shared_movement": (
+			"res://project_examples/shared_movement_example/shared_movement_example.tscn"),
 	"astar_comparison": "res://project_examples/astar_maze_comparison/astar_maze_comparison.tscn",
 }
 
@@ -36,7 +37,7 @@ var dijkstra_map := DijkstraMap.new() ## DijkstraMap used in this menu for pathf
 ## On ready, generate a DijkstraMap for the tilemap cells, then generate a Dijkstra image that
 ## represents the cost at each cell, and assign that image to a shader on the tilemap for rendering.
 func _ready() -> void:
-	# Iterate through entire map, adding points for each normal tile, and making connections to
+	# Iterate through the entire map, adding points for each normal tile, and making connections to
 	# adjacent normal ones.
 	# We iterate through columns then rows, from left -> right, top -> bottom. For each tile, we
 	# check the top and left neighbors, then create bidirectional connections if valid.
