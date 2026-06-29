@@ -2,10 +2,10 @@ using Godot;
 using Godot.Collections;
 
 /// <summary>
-/// Recreation of the GDScript DijkstraMap visualization code (gridmap.gd) in C#.
+/// Recreation of the GDScript DijkstraMap visualization code (dijkstra_tile_map_gdscript.gd) in C#.
 /// Please refer to the GDScript version for full code documentation.
 /// </summary>
-public partial class gridmap_c_sharp : Node2D
+public partial class dijkstra_tile_map_c_sharp : Node2D
 {
 	private enum TileAtlases { Main, Gradient }
 	private enum MainTiles { SmoothTerrain, RoughTerrain, Wall, Origin }
@@ -61,6 +61,8 @@ public partial class gridmap_c_sharp : Node2D
 
 		UpdateTerrainIds();
 		Recalculate();
+
+		GD.Print("Set up DijkstraMap visualization with C#!");
 	}
 
 	private void Recalculate()

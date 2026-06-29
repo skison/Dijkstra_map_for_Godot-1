@@ -64,6 +64,8 @@ func setup() -> void:
 	update_terrain_ids()
 	recalculate()
 
+	print("Set up DijkstraMap visualization with GDScript!")
+
 
 ## Recalculate the DijsktraMap, calculating the costs/directions for each point in the map, and
 ## update the TileMap representation.
@@ -83,9 +85,8 @@ func recalculate() -> void:
 	costs.assign(dijkstramap.get_cost_map())
 	costs_tile_layer.clear()
 
-	for id: int in costs.keys():
-		# Get the cost value at this location, and limit to the visible range available.
-		#var cost := clampi(int(costs[id]), 0, MAX_VISUAL_COST)
+	for id in costs:
+		# Get the cost value at this location and limit to the visible range available.
 		costs_tile_layer.set_cell(
 			id_to_pos[id],
 			TileAtlases.GRADIENT,
@@ -93,12 +94,13 @@ func recalculate() -> void:
 		)
 
 	# Visualize directions map
-	var dir_ids := dijkstramap.get_direction_map()
+	var directions: Dictionary[int, int]
+	directions.assign(dijkstramap.get_direction_map())
 	directions_tile_layer.clear()
 
-	for id: int in dir_ids.keys():
+	for id in directions:
 		var pos := Vector2i(id_to_pos[id])
-		var dir := Vector2i(id_to_pos.get(dir_ids[id], Vector2i(NAN, NAN))) - pos
+		var dir := Vector2i(id_to_pos.get(directions[id], Vector2i(NAN, NAN))) - pos
 		directions_tile_layer.set_cell(
 			id_to_pos[id],
 			TileAtlases.MAIN,
@@ -108,7 +110,7 @@ func recalculate() -> void:
 
 ## Ensure the DijkstraMap has the correct terrain type set at each node.
 func update_terrain_ids() -> void:
-	for id in id_to_pos.keys():
+	for id in id_to_pos:
 		var pos := id_to_pos[id]
 		dijkstramap.set_terrain_for_point(id, get_tile_type_from_cell_position(pos))
 

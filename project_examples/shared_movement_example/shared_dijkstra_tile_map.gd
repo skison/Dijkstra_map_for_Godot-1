@@ -5,10 +5,13 @@ extends Node2D
 ##
 ## Note that because there is only one DijkstraMap for each character type used for calculations, it
 ## isn't possible to represent multiple characters' movements to uniquely different locations
-## simultaneously (i.e. you can't have one pikeman with a different target node than another).
+## simultaneously (e.g. you can't have one pikeman with a different specific target than another).
 ## For a solution that can allow this behavior, consider storing duplicated DijkstraMaps (derived
 ## from a base DijkstraMap) on each character using the duplicate_graph_from method, so each one can
 ## manage its own state.
+## This behavior may be improved by the proposed "remote" DijkstraMap feature that would split up
+## the responsibilities of hosting the graph and calculating costs/directions for a user of the
+## graph, see: https://github.com/MatejSloboda/Dijkstra_map_for_Godot/issues/98 for details.
 
 ## Emitted whenever a cell on the TileMap is selected.
 signal cell_selected(cell_pos: Vector2i, world_pos: Vector2)
@@ -65,7 +68,7 @@ func _ready() -> void:
 			TILE_ATLAS_COORDS[tile_type],
 		)
 
-	# Now we insert the points
+	# Now we insert the points.
 	var id := 0
 	for pos in walkable_tiles:
 		id += 1
@@ -158,10 +161,11 @@ func recalculate_dijkstra_maps() -> void:
 	# - The dragon can exist anywhere, even on non-walkable tiles, so terrain doesn't matter.
 	# - First we recalculate their Dijkstra map with dragon_position_id as the origin.
 	# - We also do not need to calculate the entire DijkstraMap, only until we have points at the
-	#   required distance
-	# - This can be achieved by providing optional parameter "maximum cost".
+	#   required distance.
+	# - This could be achieved by providing the optional parameter "maximum cost".
 	res = dijkstra_map_for_archers.recalculate(dragon_position_id, optional_parameters)
 	assert(res == 0)
+
 	# Now we get IDs of all points safe distance from dragon_position_id, but within firing range
 	var stand_over_here := dijkstra_map_for_archers.get_all_points_with_cost_between(4.0, 5.0)
 	optional_parameters = { "terrain_weights": tile_terrain_weights, "input_is_destination": true }
@@ -210,12 +214,12 @@ func get_speed_modifier(world_pos: Vector2) -> float:
 func get_target_for_pikeman(pos: Vector2) -> Vector2:
 	var map_coords := main_tile_layer.local_to_map(pos)
 
-	# We look up in the Dijkstra map where the pikeman should go next
+	# We look up in the DijkstraMap where the pikeman should go next.
 	var target_id := dijkstra_map_for_pikemen.get_direction_at_point(
 		_position_to_id.get(map_coords, 0),
 	)
-	# If dragon_position_id is inaccessible from current position, then Dijkstra map
-	# spits out -1, and we don't move.
+	# If dragon_position_id is inaccessible from current position, then DijkstraMap spits out -1,
+	# and we don't move.
 	if target_id == -1:
 		return INVALID_POS
 	var target_coords := _id_to_position[target_id]
@@ -227,12 +231,12 @@ func get_target_for_pikeman(pos: Vector2) -> Vector2:
 func get_target_for_archer(pos: Vector2) -> Vector2:
 	var map_coords := main_tile_layer.local_to_map(pos)
 
-	# We look up in the Dijkstra map where the archer should go next
+	# We look up in the DijkstraMap where the archer should go next
 	var target_id := dijkstra_map_for_archers.get_direction_at_point(
 		_position_to_id.get(map_coords, 0),
 	)
-	# If dragon_position_id is inaccessible from current position, then Dijkstra map
-	# spits out -1, and we don't move.
+	# If dragon_position_id is inaccessible from current position, then DijkstraMap spits out -1,
+	# and we don't move.
 	if target_id == -1:
 		return INVALID_POS
 	var target_coords := _id_to_position[target_id]

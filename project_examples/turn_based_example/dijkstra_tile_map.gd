@@ -9,6 +9,9 @@ extends Node2D
 ## For a solution that works for multiple characters, consider storing duplicated DijkstraMaps
 ## (derived from the base DijkstraMap) on each character using the duplicate_graph_from method, so
 ## each one can manage its own state.
+## This behavior may be improved by the proposed "remote" DijkstraMap feature that would split up
+## the responsibilities of hosting the graph and calculating costs/directions for a user of the
+## graph, see: https://github.com/MatejSloboda/Dijkstra_map_for_Godot/issues/98 for details.
 
 ## Emitted whenever a cell on the TileMap is selected.
 signal cell_selected(cell_pos: Vector2i, main_tile_type: int, is_in_highlight_area: bool)
@@ -48,14 +51,13 @@ func _ready() -> void:
 	_position_to_id.assign(dijkstra_map.add_square_grid(rect, -1, 1.0, 1.4))
 
 	# Now we will iterate through the positions and change the terrains to the appropriate values.
-	for pos: Vector2i in _position_to_id.keys():
+	for pos in _position_to_id:
 		var id := _position_to_id[pos]
-		# We will simply use the IDs of the tiles in tileset
+		# We will simply use the IDs of the tiles in the tileset.
 		var terrain_id := get_tile_type_from_cell_position(pos)
-		# Dijkstra map only references points by their ID.
-		# It is oblivious to their actual position.
+		# DijkstraMap only references points by their ID, it is oblivious to their actual positions.
 		dijkstra_map.set_terrain_for_point(id, terrain_id)
-		# We also make _id_to_position dictionary for convenience
+		# We also make a _id_to_position dictionary for convenience.
 		_id_to_position[id] = pos
 
 
@@ -64,9 +66,10 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed == false:
 		var pos := main_tile_layer.local_to_map(get_local_mouse_position())
 		var main_tile_type := get_tile_type_from_cell_position(pos)
-		# Check if clicked point is within the highlighted area
+		# Check if clicked point is within the highlighted area.
 		var is_in_highlight_area := (
-				highlight_tile_layer.get_cell_atlas_coords(pos) == TILE_ATLAS_COORDS[Tiles.HIGHLIGHT]
+				highlight_tile_layer.get_cell_atlas_coords(pos)
+				== TILE_ATLAS_COORDS[Tiles.HIGHLIGHT]
 		)
 		cell_selected.emit(pos, main_tile_type, is_in_highlight_area)
 
@@ -83,7 +86,7 @@ func get_tile_type_from_cell_position(cell_pos: Vector2i) -> int:
 	var tile_type: Variant = TILE_ATLAS_COORDS.find_key(
 		main_tile_layer.get_cell_atlas_coords(cell_pos),
 	)
-	# Explicit null check to include 0 case
+	# Explicit null check to include 0 case.
 	return tile_type if tile_type != null else -1
 
 
@@ -94,7 +97,7 @@ func get_tile_type_from_world_position(world_pos: Vector2) -> int:
 
 
 ## Calculate & save the moveable area within the tilemap given a position, maximum movement cost,
-## and a mapping of terrain weights. Note that this will override the previous DijsktraMap costs!
+## and a mapping of terrain weights. Note that this will overwrite the previous DijsktraMap costs!
 ## Optionally highlight the moveable area afterward.
 func calculate_moveable_area(
 		world_pos: Vector2,
@@ -108,15 +111,15 @@ func calculate_moveable_area(
 	var id := _position_to_id[pos]
 	dijkstra_map.recalculate(id, { "terrain_weights": terrain_weights })
 
-	# Get all tiles with cost below "max_cost"
+	# Get all tiles with cost below "max_cost".
 	var point_ids := dijkstra_map.get_all_points_with_cost_between(0.0, max_cost)
 
-	# Now we highlight these cells in the tilemap's highlight layer if desired
+	# Now we highlight these cells in the tilemap's highlight layer if desired.
 	if highlight_area:
 		var cell_positions := PackedVector2Array()
 		for point_id in point_ids:
 			cell_positions.append(_id_to_position[point_id])
-			highlight_cell_area(cell_positions)
+		highlight_cell_area(cell_positions)
 
 
 ## Get the shortest path from the DijkstraMap, and translate it into world positions.
